@@ -83,4 +83,53 @@ game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
 			end
 		end
 	end
+end)	Main0 = Window:AddTab({ Title = "Giới thiệu" }),
+	Main1 = Window:AddTab({ Title = "Auto kim cương" }),
+}
+
+---------------------------------------------------
+-- 🌟 Nút test trong tab
+---------------------------------------------------
+Tabs.Main0:AddButton({
+	Title = "Tiktok MinhZuTa",
+	Description = "Follow để nhận script mới",
+	Callback = function()
+		setclipboard("https://www.tiktok.com/@minhzuta")
+	end
+})
+
+Tabs.Main1:AddButton({
+	Title = "Candy Farm",
+	Description = "Farm kẹo tự động",
+	Callback = function()
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))()
+	end
+})
+
+---------------------------------------------------
+-- 🔘 Nút ẩn/hiện menu
+---------------------------------------------------
+local isOpen = true
+ToggleButton.MouseButton1Click:Connect(function()
+	isOpen = not isOpen
+	for _, gui in ipairs(game.CoreGui:GetChildren()) do
+		if gui.Name == "Fluent" then
+			gui.Enabled = isOpen
+		end
+	end
+end)
+
+---------------------------------------------------
+-- ⌨️ Phím tắt End (ẩn/hiện luôn)
+---------------------------------------------------
+game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
+	if gp then return end
+	if input.KeyCode == Enum.KeyCode.End then
+		isOpen = not isOpen
+		for _, gui in ipairs(game.CoreGui:GetChildren()) do
+			if gui.Name == "Fluent" then
+				gui.Enabled = isOpen
+			end
+		end
+	end
 end)
