@@ -1,4 +1,4 @@
--- 🪟 GUI nút mở/đóng
+-- 🧩 Giao diện nút bật/tắt menu
 local ScreenGui = Instance.new("ScreenGui")
 local ImageButton = Instance.new("ImageButton")
 local UICorner = Instance.new("UICorner")
@@ -9,7 +9,7 @@ ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ImageButton.Parent = ScreenGui
 ImageButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ImageButton.BorderSizePixel = 0
-ImageButton.Position = UDim2.new(0.10615778, 0, 0.16217947, 0)
+ImageButton.Position = UDim2.new(0.1, 0, 0.16, 0)
 ImageButton.Size = UDim2.new(0, 40, 0, 40)
 ImageButton.Draggable = true
 ImageButton.Image = "http://www.roblox.com/asset/?id=90677395878536"
@@ -21,7 +21,7 @@ UICorner.Parent = ImageButton
 repeat task.wait() until game:IsLoaded()
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
--- 🪟 Tạo cửa sổ chính
+-- 🪟 Tạo cửa sổ menu
 local Window = Fluent:CreateWindow({
 	Title = "MinhZuTa =}",         
 	SubTitle = "Free key",             
@@ -32,20 +32,20 @@ local Window = Fluent:CreateWindow({
 	MinimizeKey = Enum.KeyCode.End
 })
 
--- 🏷️ Các tab
+-- 📑 Các tab (mục chính)
 local Tabs = {
-	Main0 = Window:AddTab({ Title = "giới thiệu" }),
-	Main1 = Window:AddTab({ Title = "auto kim cương" }),
+	Main0 = Window:AddTab({ Title = "giới thiệu" }),  
+	Main1 = Window:AddTab({ Title = "menu" }),  
 }
 
 ------------------------------------------------
--- TAB 1: Giới thiệu
+-- TAB 1: Các kênh tiktok
 ------------------------------------------------
 Tabs.Main0:AddButton({
-	Title = "tiktok MinhZuTa",
+	Title = "tiktok MinhZuTa",           
 	Description = "oách xà lách vô cùng",
 	Callback = function()
-		setclipboard("https://www.tiktok.com/@minhzuta")
+		setclipboard("https://www.tiktok.com/@minhzuta")  
 	end
 })
 
@@ -53,7 +53,7 @@ Tabs.Main0:AddButton({
 	Title = "tik",
 	Description = "làm chơi thui",
 	Callback = function()
-		setclipboard("https://www.tiktok.com/@minhzuta")
+		setclipboard("https://www.tiktok.com/@minhzuta")    
 	end
 })
 
@@ -66,19 +66,19 @@ Tabs.Main0:AddButton({
 })
 
 ------------------------------------------------
--- TAB 2: Auto Farm
+-- TAB 2: Ví dụ thêm script
 ------------------------------------------------
 Tabs.Main1:AddButton({
-	Title = "fram kim cương",
+	Title = "fram kim cương",                             
 	Description = "auto",
 	Callback = function()
 		local Settings = {
-			JoinTeam = "Pirates";
-			Translator = true;
+			JoinTeam = "Pirates";   
+			Translator = true;      
 		}
 		loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))()
 	end
-})
+}) 
 
 Tabs.Main1:AddButton({
 	Title = "Candy Farm",
@@ -89,26 +89,25 @@ Tabs.Main1:AddButton({
 })
 
 ------------------------------------------------
--- 🔘 Chức năng ĐÓNG/MỞ menu
+-- ⚡ Thêm chức năng ẩn / hiện menu
 ------------------------------------------------
-local isOpen = true
+local menuVisible = true
+local TweenService = game:GetService("TweenService")
 
-local function ToggleMenu()
-	isOpen = not isOpen
-	if isOpen then
-		Window:Minimize(false)  -- mở
-	else
-		Window:Minimize(true)   -- thu gọn
+local function toggleMenu()
+	menuVisible = not menuVisible
+	local targetTransparency = menuVisible and 0 or 1
+
+	-- Làm mượt hiệu ứng ẩn/hiện
+	for _, gui in pairs(Window.gui:GetDescendants()) do
+		if gui:IsA("Frame") or gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("ImageLabel") then
+			TweenService:Create(gui, TweenInfo.new(0.3), {BackgroundTransparency = targetTransparency, TextTransparency = targetTransparency, ImageTransparency = targetTransparency}):Play()
+		end
 	end
+
+	-- Tắt tương tác khi ẩn
+	Window.gui.Enabled = menuVisible
 end
 
--- 📱 Hỗ trợ điện thoại (ấn vào nút)
-ImageButton.MouseButton1Click:Connect(ToggleMenu)
-
--- 💻 Hỗ trợ PC (nhấn phím End)
-game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
-	if gp then return end
-	if input.KeyCode == Enum.KeyCode.End then
-		ToggleMenu()
-	end
-end)
+-- 👇 Bấm nút để đóng/mở menu
+ImageButton.MouseButton1Click:Connect(toggleMenu)
