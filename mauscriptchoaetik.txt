@@ -1,5 +1,5 @@
--- MinhZuTa Menu v1.1
--- Logo & nền: 120369168842078
+-- MinhZuTa Menu v1.3
+-- Logo mới & nền: 120369168842078
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local parentGui = game:GetService("CoreGui")
@@ -18,44 +18,37 @@ local function new(class, props)
     return ins
 end
 
+-- ScreenGui và logo
 local ScreenGui = new("ScreenGui", {Parent = parentGui, ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Name = "MinhZuTa_Menu"})
 local Toggle = new("ImageButton", {
     Parent = ScreenGui,
     Name = "ToggleButton",
     Image = "rbxassetid://120369168842078",
-    BackgroundTransparency = 1,
+    BackgroundTransparency = 0, -- không trong suốt
+    BackgroundColor3 = Color3.fromRGB(25,25,25),
     Size = UDim2.new(0, 64, 0, 64),
     Position = UDim2.new(0.03, 0, 0.12, 0),
     AutoButtonColor = false,
     ScaleType = Enum.ScaleType.Crop,
 })
 new("UICorner", {Parent = Toggle, CornerRadius = UDim.new(1,0)})
-new("UIStroke", {Parent = Toggle, Thickness = 1, Transparency = 0.7})
+new("UIStroke", {Parent = Toggle, Thickness = 1, Color = Color3.fromRGB(200,200,200)})
 
+-- Menu chính
 local MenuFrame = new("Frame", {
     Parent = ScreenGui,
     Name = "MenuFrame",
     Size = UDim2.new(0, 320, 0, 420),
     Position = UDim2.new(0.03, 80, 0.12, 0),
-    BackgroundTransparency = 1,
+    BackgroundColor3 = Color3.fromRGB(30,30,30), -- không trong suốt
     Visible = false,
 })
 new("UICorner", {Parent = MenuFrame, CornerRadius = UDim.new(0,14)})
-local Bg = new("ImageLabel", {
-    Parent = MenuFrame,
-    Name = "Background",
-    Image = "rbxassetid://120369168842078",
-    Size = UDim2.new(1,0,1,0),
-    Position = UDim2.new(0,0,0,0),
-    ScaleType = Enum.ScaleType.Crop,
-    BackgroundTransparency = 1,
-})
-local Overlay = new("Frame", {Parent = Bg, Size = UDim2.new(1,0,1,0), BackgroundColor3 = Color3.fromRGB(10,10,12), BackgroundTransparency = 0.55})
-new("UICorner", {Parent = Overlay, CornerRadius = UDim.new(0,14)})
 
 local Header = new("TextLabel", {
-    Parent = Overlay,
-    BackgroundTransparency = 1,
+    Parent = MenuFrame,
+    BackgroundTransparency = 0,
+    BackgroundColor3 = Color3.fromRGB(35,35,35),
     Text = "MinhZuTa",
     Font = Enum.Font.GothamBold,
     TextSize = 20,
@@ -64,11 +57,12 @@ local Header = new("TextLabel", {
     Size = UDim2.new(0.94,0,0,28),
     TextXAlignment = Enum.TextXAlignment.Left,
 })
+new("UICorner", {Parent = Header, CornerRadius = UDim.new(0,10)})
+
 local Collapse = new("TextButton", {
-    Parent = Overlay,
+    Parent = MenuFrame,
     Text = "—",
-    BackgroundTransparency = 0.6,
-    BackgroundColor3 = Color3.fromRGB(0,0,0),
+    BackgroundColor3 = Color3.fromRGB(35,35,35),
     Position = UDim2.new(0.85,0,0.03,0),
     Size = UDim2.new(0,0,0,28),
     SizeConstraint = Enum.SizeConstraint.RelativeYY,
@@ -78,15 +72,16 @@ local Collapse = new("TextButton", {
 })
 new("UICorner", {Parent = Collapse, CornerRadius = UDim.new(0,8)})
 
-local TabsHolder = new("Frame", {Parent = Overlay, BackgroundTransparency = 1, Position = UDim2.new(0.03,0,0.12,0), Size = UDim2.new(0.94,0,0.82,0)})
+-- Tabs holder
+local TabsHolder = new("Frame", {Parent = MenuFrame, BackgroundColor3 = Color3.fromRGB(30,30,30), Position = UDim2.new(0.03,0,0.12,0), Size = UDim2.new(0.94,0,0.82,0)})
 local TabsLayout = new("UIListLayout", {Parent = TabsHolder, Padding = UDim.new(0,8), FillDirection = Enum.FillDirection.Vertical})
 TabsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 -- Giới thiệu
-local IntroFrame = new("Frame", {Parent = TabsHolder, BackgroundTransparency = 0.6, BackgroundColor3 = Color3.fromRGB(0,0,0), Size = UDim2.new(1,0,0,90)})
+local IntroFrame = new("Frame", {Parent = TabsHolder, BackgroundColor3 = Color3.fromRGB(35,35,35), Size = UDim2.new(1,0,0,90)})
 new("UICorner", {Parent = IntroFrame, CornerRadius = UDim.new(0,10)})
 new("TextLabel", {Parent = IntroFrame, BackgroundTransparency = 1, Text = "Giới thiệu", Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = Color3.fromRGB(255,255,255), Position = UDim2.new(0.04,0,0.06,0), Size = UDim2.new(0.6,0,0,20), TextXAlignment = Enum.TextXAlignment.Left})
-local TikTokBtn = new("TextButton", {Parent = IntroFrame, BackgroundTransparency = 0.25, BackgroundColor3 = Color3.fromRGB(20,20,20), Text = "TikTok: @minhzuta", Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = Color3.fromRGB(230,230,230), Position = UDim2.new(0.04,0,0.4,0), Size = UDim2.new(0.92,0,0,28), AutoButtonColor = true})
+local TikTokBtn = new("TextButton", {Parent = IntroFrame, BackgroundColor3 = Color3.fromRGB(50,50,50), Text = "TikTok: @minhzuta", Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = Color3.fromRGB(230,230,230), Position = UDim2.new(0.04,0,0.4,0), Size = UDim2.new(0.92,0,0,28), AutoButtonColor = true})
 new("UICorner", {Parent = TikTokBtn, CornerRadius = UDim.new(0,8)})
 new("TextLabel", {Parent = IntroFrame, BackgroundTransparency = 1, Text = "Cảm ơn bạn rất nhiều", Font = Enum.Font.Gotham, TextSize = 13, TextColor3 = Color3.fromRGB(200,200,200), Position = UDim2.new(0.04,0,0.75,0), Size = UDim2.new(0.92,0,0,16), TextXAlignment = Enum.TextXAlignment.Left})
 TikTokBtn.MouseButton1Click:Connect(function()
@@ -95,29 +90,39 @@ TikTokBtn.MouseButton1Click:Connect(function()
     TikTokBtn.Text = "TikTok: @minhzuta"
 end)
 
--- "99 nights in the forest Menu (2 nút)" Tab
-local MenuTab = new("Frame", {Parent = TabsHolder, BackgroundTransparency = 0.6, BackgroundColor3 = Color3.fromRGB(0,0,0), Size = UDim2.new(1,0,0,120)})
+-- "99 nights in the forest Menu (3 nút)"
+local MenuTab = new("Frame", {Parent = TabsHolder, BackgroundColor3 = Color3.fromRGB(35,35,35), Size = UDim2.new(1,0,0,140)})
 new("UICorner", {Parent = MenuTab, CornerRadius = UDim.new(0,10)})
-new("TextLabel", {Parent = MenuTab, BackgroundTransparency = 1, Text = "99 nights in the forest Menu (2 nút)", Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = Color3.fromRGB(255,255,255), Position = UDim2.new(0.04,0,0.06,0), Size = UDim2.new(0.92,0,0,20), TextXAlignment = Enum.TextXAlignment.Left})
-local ButtonsContainer = new("Frame", {Parent = MenuTab, BackgroundTransparency = 1, Position = UDim2.new(0.04,0,0.32,0), Size = UDim2.new(0.92,0,0.6,0)})
+new("TextLabel", {Parent = MenuTab, BackgroundTransparency = 1, Text = "99 nights in the forest Menu (3 nút)", Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = Color3.fromRGB(255,255,255), Position = UDim2.new(0.04,0,0.04,0), Size = UDim2.new(0.92,0,0,22), TextXAlignment = Enum.TextXAlignment.Left})
+local ButtonsContainer = new("Frame", {Parent = MenuTab, BackgroundTransparency = 1, Position = UDim2.new(0.04,0,0.22,0), Size = UDim2.new(0.92,0,0.7,0)})
 local BtnLayout = new("UIListLayout", {Parent = ButtonsContainer, FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center, Padding = UDim.new(0,8)})
 BtnLayout.FillDirection = Enum.FillDirection.Horizontal
+
 local function createMenuButton(title, desc, callback)
-    local b = new("TextButton", {Parent = ButtonsContainer, BackgroundColor3 = Color3.fromRGB(15,15,15), BackgroundTransparency = 0, Size = UDim2.new(0.48,0,1,0), Text = title, Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = Color3.fromRGB(240,240,240), AutoButtonColor = true})
+    local b = new("TextButton", {Parent = ButtonsContainer, BackgroundColor3 = Color3.fromRGB(50,50,50), Size = UDim2.new(0.3,0,1,0), Text = title, Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = Color3.fromRGB(240,240,240), AutoButtonColor = true})
     new("UICorner", {Parent = b, CornerRadius = UDim.new(0,8)})
     new("TextLabel", {Parent = b, BackgroundTransparency = 1, Text = desc, Font = Enum.Font.Gotham, TextSize = 11, TextColor3 = Color3.fromRGB(180,180,180), Position = UDim2.new(0,6,0.6,0), Size = UDim2.new(0.9,0,0.35,0), TextXAlignment = Enum.TextXAlignment.Left})
     b.MouseButton1Click:Connect(callback)
     return b
 end
+
+-- Nút 1
 createMenuButton("Fram kim cương","Auto", function()
     pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))() end)
 end)
+
+-- Nút 2
 createMenuButton("Fram kẹo","Auto", function()
     pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))() end)
 end)
 
--- Atiban (AFK) Tab
-local AtibanTab = new("Frame", {Parent = TabsHolder, BackgroundTransparency = 0.6, BackgroundColor3 = Color3.fromRGB(0,0,0), Size = UDim2.new(1,0,0,70)})
+-- Nút 3: Fram kim cương v2
+createMenuButton("Fram kim cương v2","Auto", function()
+    pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkenedEssence/Elude/refs/heads/main/External/Diamond/ELUDESJI.lua"))() end)
+end)
+
+-- Atiban (AFK)
+local AtibanTab = new("Frame", {Parent = TabsHolder, BackgroundColor3 = Color3.fromRGB(35,35,35), Size = UDim2.new(1,0,0,70)})
 new("UICorner", {Parent = AtibanTab, CornerRadius = UDim.new(0,10)})
 new("TextLabel", {Parent = AtibanTab, BackgroundTransparency = 1, Text = "Atiban (AFK)", Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = Color3.fromRGB(200,200,200), Position = UDim2.new(0.04,0,0.06,0), Size = UDim2.new(0.9,0,0,20), TextXAlignment = Enum.TextXAlignment.Left})
 
@@ -162,4 +167,4 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
-print("[MinhZuTa v1.1] Menu ready.")
+print("[MinhZuTa v1.3] Menu ready. Logo mới & nút 3: Fram kim cương v2")
