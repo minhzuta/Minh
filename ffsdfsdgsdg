@@ -1,135 +1,91 @@
--- 🧱 Tạo ScreenGui + nút mở/đóng menu
+-- 📱 GUI nút mở/đóng menu Fluent
 local ScreenGui = Instance.new("ScreenGui")
 local ToggleButton = Instance.new("ImageButton")
 local UICorner = Instance.new("UICorner")
 
-ScreenGui.Parent = game.CoreGui
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Name = "MinhZuTaUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.Parent = game:GetService("CoreGui")
 
 ToggleButton.Parent = ScreenGui
-ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 ToggleButton.BorderSizePixel = 0
 ToggleButton.Position = UDim2.new(0.05, 0, 0.3, 0)
-ToggleButton.Size = UDim2.new(0, 45, 0, 45)
+ToggleButton.Size = UDim2.new(0, 55, 0, 55)
 ToggleButton.Draggable = true
+ToggleButton.Active = true -- ⚡ cần cho mobile touch
+ToggleButton.Selectable = true
 ToggleButton.Image = "rbxassetid://90677395878536"
 
 UICorner.CornerRadius = UDim.new(1, 10)
 UICorner.Parent = ToggleButton
 
 ---------------------------------------------------
--- 🪟 Load Fluent UI
+-- 🪟 Load Fluent
 ---------------------------------------------------
 repeat task.wait() until game:IsLoaded()
+
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 local Window = Fluent:CreateWindow({
-	Title = "MinhZuTa =}",
-	SubTitle = "Free key",
-	TabWidth = 157,
-	Size = UDim2.fromOffset(450, 300),
-	Acrylic = true,
-	Theme = "Dark",
-	MinimizeKey = Enum.KeyCode.End
+    Title = "MinhZuTa =}",
+    SubTitle = "Free key",
+    TabWidth = 157,
+    Size = UDim2.fromOffset(450, 300),
+    Acrylic = true,
+    Theme = "Dark",
 })
 
 local Tabs = {
-	Main0 = Window:AddTab({ Title = "Giới thiệu" }),
-	Main1 = Window:AddTab({ Title = "Auto kim cương" }),
+    Main0 = Window:AddTab({ Title = "Giới thiệu" }),
+    Main1 = Window:AddTab({ Title = "Auto kim cương" }),
 }
 
----------------------------------------------------
--- 🌟 Nút test trong tab
----------------------------------------------------
 Tabs.Main0:AddButton({
-	Title = "Tiktok MinhZuTa",
-	Description = "Follow để nhận script mới",
-	Callback = function()
-		setclipboard("https://www.tiktok.com/@minhzuta")
-	end
+    Title = "Tiktok MinhZuTa",
+    Description = "Follow để nhận script mới",
+    Callback = function()
+        setclipboard("https://www.tiktok.com/@minhzuta")
+    end
 })
 
 Tabs.Main1:AddButton({
-	Title = "Candy Farm",
-	Description = "Farm kẹo tự động",
-	Callback = function()
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))()
-	end
+    Title = "Candy Farm",
+    Description = "Farm kẹo tự động",
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))()
+    end
 })
 
 ---------------------------------------------------
--- 🔘 Nút ẩn/hiện menu
+-- 🖱️ Nút mở/đóng menu + hiệu ứng mờ dần
 ---------------------------------------------------
+local TweenService = game:GetService("TweenService")
+local FluentUI = Fluent.UI or Fluent.Interface
 local isOpen = true
-ToggleButton.MouseButton1Click:Connect(function()
-	isOpen = not isOpen
-	for _, gui in ipairs(game.CoreGui:GetChildren()) do
-		if gui.Name == "Fluent" then
-			gui.Enabled = isOpen
-		end
-	end
-end)
 
----------------------------------------------------
--- ⌨️ Phím tắt End (ẩn/hiện luôn)
----------------------------------------------------
-game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
-	if gp then return end
-	if input.KeyCode == Enum.KeyCode.End then
-		isOpen = not isOpen
-		for _, gui in ipairs(game.CoreGui:GetChildren()) do
-			if gui.Name == "Fluent" then
-				gui.Enabled = isOpen
-			end
-		end
-	end
-end)	Main0 = Window:AddTab({ Title = "Giới thiệu" }),
-	Main1 = Window:AddTab({ Title = "Auto kim cương" }),
-}
+local function toggleMenu()
+    if not FluentUI then
+        for _,v in pairs(game.CoreGui:GetChildren()) do
+            if v.Name:lower():find("fluent") then
+                FluentUI = v
+                break
+            end
+        end
+    end
+    if FluentUI then
+        isOpen = not isOpen
+        if isOpen then
+            FluentUI.Enabled = true
+            TweenService:Create(FluentUI, TweenInfo.new(0.3), {GroupTransparency = 0}):Play()
+        else
+            TweenService:Create(FluentUI, TweenInfo.new(0.3), {GroupTransparency = 1}):Play()
+            task.delay(0.3, function() FluentUI.Enabled = false end)
+        end
+    end
+end
 
----------------------------------------------------
--- 🌟 Nút test trong tab
----------------------------------------------------
-Tabs.Main0:AddButton({
-	Title = "Tiktok MinhZuTa",
-	Description = "Follow để nhận script mới",
-	Callback = function()
-		setclipboard("https://www.tiktok.com/@minhzuta")
-	end
-})
-
-Tabs.Main1:AddButton({
-	Title = "Candy Farm",
-	Description = "Farm kẹo tự động",
-	Callback = function()
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))()
-	end
-})
-
----------------------------------------------------
--- 🔘 Nút ẩn/hiện menu
----------------------------------------------------
-local isOpen = true
-ToggleButton.MouseButton1Click:Connect(function()
-	isOpen = not isOpen
-	for _, gui in ipairs(game.CoreGui:GetChildren()) do
-		if gui.Name == "Fluent" then
-			gui.Enabled = isOpen
-		end
-	end
-end)
-
----------------------------------------------------
--- ⌨️ Phím tắt End (ẩn/hiện luôn)
----------------------------------------------------
-game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
-	if gp then return end
-	if input.KeyCode == Enum.KeyCode.End then
-		isOpen = not isOpen
-		for _, gui in ipairs(game.CoreGui:GetChildren()) do
-			if gui.Name == "Fluent" then
-				gui.Enabled = isOpen
-			end
-		end
-	end
-end)
+-- ⚡ Hỗ trợ cả click và chạm cảm ứng
+ToggleButton.MouseButton1Click:Connect(toggleMenu)
+ToggleButton.TouchTap:Connect(toggleMenu)
