@@ -1,308 +1,333 @@
--- LocalScript: MinhZuTa GUI (Studio-safe, self-contained)
--- Paste into StarterPlayerScripts or StarterGui
+-- MinhZuTa Menu v1.0
+-- Dùng với exploit/executor (Synapse/Flux/etc.)
+-- Cấu hình: Logo tròn ID: 86575734561372, Ảnh nền (mặc định) ID: 865757345613
+-- Buttons loadstring đã cung cấp.
 
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
-local LOCAL_PLAYER = Players.LocalPlayer
-local PLAYER_GUI = LOCAL_PLAYER:WaitForChild("PlayerGui")
+-- Ensure CoreGui available for exploits (some executors require different parents)
+local parentGui = game:GetService("CoreGui")
 
--- CONFIG
-local LOGO_ASSET = "rbxassetid://86575734561372" -- logo mở/thu (tròn)
-local BACK_ASSET = "rbxassetid://865757345613"   -- ảnh nền anime (bìa)
-local UI_WIDTH, UI_HEIGHT = 520, 330
-
--- Utility: create instance with props
+-- Utility fn
 local function new(class, props)
-	local obj = Instance.new(class)
-	if props then
-		for k,v in pairs(props) do
-			if k == "Parent" then obj.Parent = v
-			else obj[k] = v end
-		end
-	end
-	return obj
+    local ins = Instance.new(class)
+    if props then
+        for k,v in pairs(props) do
+            if k == "Parent" then
+                ins.Parent = v
+            else
+                ins[k] = v
+            end
+        end
+    end
+    return ins
 end
 
--- Remove old gui if exists
-if PLAYER_GUI:FindFirstChild("MinhZuTa_GUI") then
-	PLAYER_GUI.MinhZuTa_GUI:Destroy()
+-- Main ScreenGui
+local ScreenGui = new("ScreenGui", {Parent = parentGui, ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Name = "MinhZuTa_Menu"})
+
+-- Main circular toggle button (logo)
+local Toggle = new("ImageButton", {
+    Parent = ScreenGui,
+    Name = "ToggleButton",
+    Image = "rbxassetid://86575734561372", -- logo tròn
+    BackgroundTransparency = 1,
+    Size = UDim2.new(0, 64, 0, 64),
+    Position = UDim2.new(0.03, 0, 0.12, 0),
+    AutoButtonColor = false,
+    ScaleType = Enum.ScaleType.Crop,
+})
+local ToggleCorner = new("UICorner", {Parent = Toggle, CornerRadius = UDim.new(1,0)})
+local ToggleStroke = new("UIStroke", {Parent = Toggle, Thickness = 1, Transparency = 0.7})
+
+-- The menu frame (hidden by default)
+local MenuFrame = new("Frame", {
+    Parent = ScreenGui,
+    Name = "MenuFrame",
+    Size = UDim2.new(0, 320, 0, 420),
+    Position = UDim2.new(0.03, 80, 0.12, 0),
+    BackgroundTransparency = 1,
+    Visible = false,
+})
+local MenuCorner = new("UICorner", {Parent = MenuFrame, CornerRadius = UDim.new(0, 14)})
+local Bg = new("ImageLabel", {
+    Parent = MenuFrame,
+    Name = "Background",
+    Image = "rbxassetid://865757345613", -- ảnh nền anime mặc định (bạn đổi ID nếu muốn)
+    Size = UDim2.new(1,0,1,0),
+    Position = UDim2.new(0,0,0,0),
+    ScaleType = Enum.ScaleType.Crop,
+    BackgroundTransparency = 1,
+})
+-- Mờ/overlay để chữ hiện tốt
+local Overlay = new("Frame", {Parent = Bg, Size = UDim2.new(1,0,1,0), BackgroundColor3 = Color3.fromRGB(10,10,12), BackgroundTransparency = 0.55})
+new("UICorner", {Parent = Overlay, CornerRadius = UDim.new(0, 14)})
+
+-- Header
+local Header = new("TextLabel", {
+    Parent = Overlay,
+    BackgroundTransparency = 1,
+    Text = "MinhZuTa",
+    Font = Enum.Font.GothamBold,
+    TextSize = 20,
+    TextColor3 = Color3.fromRGB(255,255,255),
+    Position = UDim2.new(0.03,0,0.03,0),
+    Size = UDim2.new(0.94,0,0,28),
+    TextXAlignment = Enum.TextXAlignment.Left,
+})
+-- Close mini button (collapse)
+local Collapse = new("TextButton", {
+    Parent = Overlay,
+    Text = "—",
+    BackgroundTransparency = 0.6,
+    BackgroundColor3 = Color3.fromRGB(0,0,0),
+    Position = UDim2.new(0.85,0,0.03,0),
+    Size = UDim2.new(0,0,0,28),
+    SizeConstraint = Enum.SizeConstraint.RelativeYY,
+    Font = Enum.Font.SourceSansBold,
+    TextSize = 20,
+    TextColor3 = Color3.fromRGB(255,255,255),
+})
+new("UICorner", {Parent = Collapse, CornerRadius = UDim.new(0,8)})
+
+-- Tabs area
+local TabsHolder = new("Frame", {
+    Parent = Overlay,
+    BackgroundTransparency = 1,
+    Position = UDim2.new(0.03,0,0.12,0),
+    Size = UDim2.new(0.94,0,0.82,0),
+})
+local TabsLayout = new("UIListLayout", {Parent = TabsHolder, Padding = UDim.new(0,8), FillDirection = Enum.FillDirection.Vertical})
+TabsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+-- --- Tab: Giới thiệu
+local IntroFrame = new("Frame", {
+    Parent = TabsHolder,
+    BackgroundTransparency = 0.6,
+    BackgroundColor3 = Color3.fromRGB(0,0,0),
+    Size = UDim2.new(1,0,0,90),
+})
+new("UICorner", {Parent = IntroFrame, CornerRadius = UDim.new(0,10)})
+local IntroTitle = new("TextLabel", {
+    Parent = IntroFrame,
+    BackgroundTransparency = 1,
+    Text = "Giới thiệu",
+    Font = Enum.Font.GothamBold,
+    TextSize = 16,
+    TextColor3 = Color3.fromRGB(255,255,255),
+    Position = UDim2.new(0.04,0,0.06,0),
+    Size = UDim2.new(0.6,0,0,20),
+    TextXAlignment = Enum.TextXAlignment.Left,
+})
+local TikTokBtn = new("TextButton", {
+    Parent = IntroFrame,
+    BackgroundTransparency = 0.25,
+    BackgroundColor3 = Color3.fromRGB(20,20,20),
+    Text = "TikTok: @minhzuta",
+    Font = Enum.Font.Gotham,
+    TextSize = 14,
+    TextColor3 = Color3.fromRGB(230,230,230),
+    Position = UDim2.new(0.04,0,0.4,0),
+    Size = UDim2.new(0.92,0,0,28),
+    AutoButtonColor = true,
+})
+new("UICorner", {Parent = TikTokBtn, CornerRadius = UDim.new(0,8)})
+local ThanksLabel = new("TextLabel", {
+    Parent = IntroFrame,
+    BackgroundTransparency = 1,
+    Text = "Cảm ơn bạn rất nhiều",
+    Font = Enum.Font.Gotham,
+    TextSize = 13,
+    TextColor3 = Color3.fromRGB(200,200,200),
+    Position = UDim2.new(0.04,0,0.75,0),
+    Size = UDim2.new(0.92,0,0,16),
+    TextXAlignment = Enum.TextXAlignment.Left,
+})
+
+-- TikTok button behavior (mở link clipboard)
+TikTokBtn.MouseButton1Click:Connect(function()
+    pcall(function()
+        -- một số executors hỗ trợ setclipboard
+        if setclipboard then
+            setclipboard("https://www.tiktok.com/@minhzuta")
+        end
+    end)
+    -- thông báo đơn giản
+    TikTokBtn.Text = "Link đã copy vào clipboard!"
+    wait(1.2)
+    TikTokBtn.Text = "TikTok: @minhzuta"
+end)
+
+-- --- Tab: Menu (nút Fram kim cương, Fram kẹo)
+local MenuTab = new("Frame", {
+    Parent = TabsHolder,
+    BackgroundTransparency = 0.6,
+    BackgroundColor3 = Color3.fromRGB(0,0,0),
+    Size = UDim2.new(1,0,0,120),
+})
+new("UICorner", {Parent = MenuTab, CornerRadius = UDim.new(0,10)})
+local MenuTitle = new("TextLabel", {
+    Parent = MenuTab,
+    BackgroundTransparency = 1,
+    Text = "Menu",
+    Font = Enum.Font.GothamBold,
+    TextSize = 16,
+    TextColor3 = Color3.fromRGB(255,255,255),
+    Position = UDim2.new(0.04,0,0.06,0),
+    Size = UDim2.new(0.6,0,0,20),
+    TextXAlignment = Enum.TextXAlignment.Left,
+})
+
+-- Buttons container
+local ButtonsContainer = new("Frame", {
+    Parent = MenuTab,
+    BackgroundTransparency = 1,
+    Position = UDim2.new(0.04,0,0.32,0),
+    Size = UDim2.new(0.92,0,0.6,0),
+})
+local BtnLayout = new("UIListLayout", {Parent = ButtonsContainer, FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center, Padding = UDim.new(0,8)})
+BtnLayout.FillDirection = Enum.FillDirection.Horizontal
+
+local function createMenuButton(title, desc, callback)
+    local b = new("TextButton", {
+        Parent = ButtonsContainer,
+        BackgroundColor3 = Color3.fromRGB(15,15,15),
+        BackgroundTransparency = 0,
+        Size = UDim2.new(0.48,0,1,0),
+        Text = title,
+        Font = Enum.Font.Gotham,
+        TextSize = 14,
+        TextColor3 = Color3.fromRGB(240,240,240),
+        AutoButtonColor = true,
+    })
+    new("UICorner", {Parent = b, CornerRadius = UDim.new(0,8)})
+    local descLabel = new("TextLabel", {
+        Parent = b,
+        BackgroundTransparency = 1,
+        Text = desc,
+        Font = Enum.Font.Gotham,
+        TextSize = 11,
+        TextColor3 = Color3.fromRGB(180,180,180),
+        Position = UDim2.new(0,6,0.6,0),
+        Size = UDim2.new(0.9,0,0.35,0),
+        TextXAlignment = Enum.TextXAlignment.Left,
+    })
+    b.MouseButton1Click:Connect(callback)
+    return b
 end
 
--- ScreenGui container
-local screenGui = new("ScreenGui", {Name = "MinhZuTa_GUI", Parent = PLAYER_GUI, ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling})
+-- Fram kim cương button
+createMenuButton("Fram kim cương","Auto", function()
+    pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))()
+    end)
+end)
 
--- Root frame (centered)
-local root = new("Frame", {
-	Name = "Root",
-	Parent = screenGui,
-	Size = UDim2.new(0, UI_WIDTH, 0, UI_HEIGHT),
-	Position = UDim2.new(0.5, -UI_WIDTH/2, 0.5, -UI_HEIGHT/2),
-	AnchorPoint = Vector2.new(0.5, 0.5),
-	BackgroundTransparency = 1,
-	Active = true
+-- Fram kẹo button
+createMenuButton("Fram kẹo","Auto", function()
+    pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))()
+    end)
+end)
+
+-- --- Tab: Atiban (placeholder)
+local AtibanTab = new("Frame", {
+    Parent = TabsHolder,
+    BackgroundTransparency = 0.6,
+    BackgroundColor3 = Color3.fromRGB(0,0,0),
+    Size = UDim2.new(1,0,0,70),
+})
+new("UICorner", {Parent = AtibanTab, CornerRadius = UDim.new(0,10)})
+local AtibanTitle = new("TextLabel", {
+    Parent = AtibanTab,
+    BackgroundTransparency = 1,
+    Text = "Atiban (sẽ thêm sau)",
+    Font = Enum.Font.Gotham,
+    TextSize = 14,
+    TextColor3 = Color3.fromRGB(200,200,200),
+    Position = UDim2.new(0.04,0,0.06,0),
+    Size = UDim2.new(0.9,0,0,20),
+    TextXAlignment = Enum.TextXAlignment.Left,
 })
 
--- Cover banner (anime background)
-local cover = new("ImageLabel", {
-	Name = "Cover",
-	Parent = root,
-	Size = UDim2.new(1, 0, 0, 120),
-	Position = UDim2.new(0,0,0,0),
-	BackgroundTransparency = 1,
-	Image = BACK_ASSET,
-	ScaleType = Enum.ScaleType.Crop
-})
+-- Minimize / expand handling
+local isOpen = false
+local tweenInfo = TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
--- Glass panel
-local panel = new("Frame", {
-	Name = "Panel",
-	Parent = root,
-	Size = UDim2.new(1, 0, 1, -40),
-	Position = UDim2.new(0, 0, 0, 40),
-	BackgroundColor3 = Color3.fromRGB(25,25,25),
-	BackgroundTransparency = 0.5,
-	Active = true
-})
-new("UICorner", {Parent = panel, CornerRadius = UDim.new(0,12)})
-new("UIStroke", {Parent = panel, Color = Color3.fromRGB(200,200,200), Transparency = 0.8, Thickness = 1.2})
-
--- Title label
-local title = new("TextLabel", {
-	Parent = panel,
-	Name = "Title",
-	Size = UDim2.new(1, -20, 0, 36),
-	Position = UDim2.new(0, 10, 0, 4),
-	BackgroundTransparency = 1,
-	Text = "MinhZuTa =} Free key",
-	Font = Enum.Font.SourceSansBold,
-	TextSize = 20,
-	TextColor3 = Color3.fromRGB(255,255,255),
-	TextXAlignment = Enum.TextXAlignment.Left
-})
-
--- Close (collapse) button
-local closeBtn = new("TextButton", {
-	Parent = panel,
-	Name = "CloseBtn",
-	Size = UDim2.new(0,30,0,30),
-	Position = UDim2.new(1, -40, 0, 5),
-	BackgroundColor3 = Color3.fromRGB(255,70,70),
-	Text = "×",
-	Font = Enum.Font.SourceSansBold,
-	TextSize = 20,
-	TextColor3 = Color3.fromRGB(255,255,255)
-})
-new("UICorner", {Parent = closeBtn, CornerRadius = UDim.new(1,0)})
-
--- Left tab frame
-local left = new("Frame", {
-	Parent = panel,
-	Name = "Left",
-	Size = UDim2.new(0,130,1,-60),
-	Position = UDim2.new(0,10,0,50),
-	BackgroundColor3 = Color3.fromRGB(40,40,45),
-	BackgroundTransparency = 0.3
-})
-new("UICorner", {Parent = left, CornerRadius = UDim.new(0,8)})
-
--- Tab button factory
-local function makeTabBtn(text, y)
-	local b = new("TextButton", {
-		Parent = left,
-		Size = UDim2.new(1, -10, 0, 40),
-		Position = UDim2.new(0, 5, 0, y),
-		Text = text,
-		Font = Enum.Font.SourceSansBold,
-		TextSize = 18,
-		TextColor3 = Color3.fromRGB(255,255,255),
-		BackgroundColor3 = Color3.fromRGB(70,70,75)
-	})
-	new("UICorner", {Parent = b, CornerRadius = UDim.new(0,8)})
-	return b
+local function openMenu()
+    MenuFrame.Visible = true
+    MenuFrame.Size = UDim2.new(0, 320, 0, 420)
+    MenuFrame.Position = UDim2.new(0.03, 80, 0.12, 0)
+    isOpen = true
+    TweenService:Create(MenuFrame, tweenInfo, {Position = MenuFrame.Position, Size = MenuFrame.Size}):Play()
 end
 
-local tabAbout = makeTabBtn("Giới thiệu", 8)
-local tabMenu  = makeTabBtn("Menu", 56)
-local tabAtiban = makeTabBtn("Atiban", 104)
-
--- Content area
-local content = new("Frame", {
-	Parent = panel,
-	Name = "Content",
-	Size = UDim2.new(1, -160, 1, -60),
-	Position = UDim2.new(0, 150, 0, 50),
-	BackgroundTransparency = 1
-})
-
--- Pages
-local pageAbout = new("Frame", {Parent = content, Size = UDim2.new(1,0,1,0), BackgroundTransparency = 1})
-local pageMenu = new("Frame", {Parent = content, Size = UDim2.new(1,0,1,0), BackgroundTransparency = 1, Visible = false})
-local pageAtiban = new("Frame", {Parent = content, Size = UDim2.new(1,0,1,0), BackgroundTransparency = 1, Visible = false})
-
--- About content
-local aboutLabel = new("TextLabel", {
-	Parent = pageAbout,
-	Size = UDim2.new(1, -20, 0, 80),
-	Position = UDim2.new(0, 10, 0, 20),
-	BackgroundTransparency = 1,
-	Text = "🌸 Cảm ơn bạn rất nhiều 🌸\nTikTok: https://www.tiktok.com/@minhzuta",
-	TextWrapped = true,
-	Font = Enum.Font.SourceSans,
-	TextSize = 18,
-	TextColor3 = Color3.fromRGB(255,255,255)
-})
-
--- Menu button helper
-local function createMenuButton(parent, titleText, subtitleText, y, onClick)
-	local btn = new("TextButton", {
-		Parent = parent,
-		Size = UDim2.new(1, -20, 0, 64),
-		Position = UDim2.new(0, 10, 0, y),
-		BackgroundColor3 = Color3.fromRGB(60,60,65),
-		Text = titleText .. "\n" .. subtitleText,
-		TextWrapped = true,
-		TextYAlignment = Enum.TextYAlignment.Center,
-		Font = Enum.Font.SourceSansBold,
-		TextSize = 18,
-		TextColor3 = Color3.fromRGB(255,255,255)
-	})
-	new("UICorner", {Parent = btn, CornerRadius = UDim.new(0,10)})
-	btn.MouseButton1Click:Connect(function()
-		pcall(function() onClick() end)
-	end)
-	return btn
+local function closeMenu()
+    -- shrink to compact bar
+    isOpen = false
+    TweenService:Create(MenuFrame, tweenInfo, {Size = UDim2.new(0, 220, 0, 48), Position = UDim2.new(0.03,80,0.12,0)}):Play()
+    delay(0.35, function()
+        MenuFrame.Visible = false
+        -- reset to full size for next open
+        MenuFrame.Size = UDim2.new(0,320,0,420)
+    end)
 end
 
--- Simple in-game placeholder actions (safe)
-local function notify(text)
-	if not LOCAL_PLAYER or not LOCAL_PLAYER:FindFirstChildOfClass("PlayerGui") then return end
-	local pg = LOCAL_PLAYER:FindFirstChildOfClass("PlayerGui")
-	local lab = new("TextLabel", {
-		Parent = pg,
-		Size = UDim2.new(0,260,0,40),
-		Position = UDim2.new(0.5, -130, 0.08, 0),
-		AnchorPoint = Vector2.new(0.5,0),
-		BackgroundColor3 = Color3.fromRGB(35,35,40),
-		TextColor3 = Color3.fromRGB(255,255,255),
-		Text = text,
-		Font = Enum.Font.SourceSansBold,
-		TextSize = 16,
-		Name = "MinhZuTaNotify"
-	})
-	task.delay(2, function() if lab and lab.Parent then lab:Destroy() end end)
+Toggle.Activated:Connect(function()
+    if not isOpen then
+        openMenu()
+    else
+        closeMenu()
+    end
+end)
+
+Collapse.MouseButton1Click:Connect(function()
+    if isOpen then
+        closeMenu()
+    else
+        openMenu()
+    end
+end)
+
+-- Make sure touch and click both work (Activated handles both in modern clients)
+-- Quick safeguard: prevent duplicate GUIs
+for _,v in ipairs(ScreenGui:GetDescendants()) do
+    if v:IsA("TextButton") then
+        -- nothing extra
+    end
 end
 
-local function FramKimC()
-	notify("Start Fram kim cương (placeholder)")
-end
-local function FramKeo()
-	notify("Start Fram kẹo (placeholder)")
-end
-
-createMenuButton(pageMenu, "💎 Fram kim cương", "auto", 10, FramKimC)
-createMenuButton(pageMenu, "🍬 Candy Farm", "Farm kẹo tự động", 90, FramKeo)
-
--- Atiban placeholder
-local atibanLabel = new("TextLabel", {
-	Parent = pageAtiban,
-	Position = UDim2.new(0, 10, 0, 20),
-	Size = UDim2.new(1, -20, 0, 100),
-	BackgroundTransparency = 1,
-	Text = "Atiban (placeholder)\nBạn có thể thêm chức năng bảo vệ ở đây.",
-	TextWrapped = true,
-	Font = Enum.Font.SourceSans,
-	TextSize = 18,
-	TextColor3 = Color3.fromRGB(255,255,255)
-})
-
--- Tab switching
-local function showPage(which)
-	pageAbout.Visible = (which == "about")
-	pageMenu.Visible = (which == "menu")
-	pageAtiban.Visible = (which == "atiban")
-end
-tabAbout.MouseButton1Click:Connect(function() showPage("about") end)
-tabMenu.MouseButton1Click:Connect(function() showPage("menu") end)
-tabAtiban.MouseButton1Click:Connect(function() showPage("atiban") end)
-
--- Logo button (always on ScreenGui) used to collapse/expand
-local logoBtn = new("ImageButton", {
-	Parent = screenGui,
-	Name = "LogoBtn",
-	Size = UDim2.new(0,70,0,70),
-	Position = UDim2.new(0, 30, 0, 150),
-	BackgroundTransparency = 1,
-	Image = LOGO_ASSET,
-	ZIndex = 10
-})
-
--- Dragging (mobile-friendly) for root frame
+-- Final small polish: allow drag on the MenuFrame header for repositioning (touch friendly)
 local dragging = false
-local dragStart = Vector2.new(0,0)
-local startPos = root.Position
+local dragInput, dragStart, startPos
 
-local function onInputBegan(input)
-	if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = true
-		dragStart = input.Position
-		startPos = root.Position
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
-		end)
-	end
-end
-
-local function onInputChanged(input)
-	if dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
-		local delta = input.Position - dragStart
-		root.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-	end
-end
-
-root.InputBegan:Connect(onInputBegan)
-root.InputChanged:Connect(onInputChanged)
-panel.InputBegan:Connect(onInputBegan)
-panel.InputChanged:Connect(onInputChanged)
-UserInputService.InputChanged:Connect(onInputChanged)
-UserInputService.InputEnded:Connect(function(inp)
-	if inp.UserInputType == Enum.UserInputType.Touch or inp.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = false
-	end
+Header.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = MenuFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
 end)
 
--- Collapse/expand logic (collapse hides root, logo remains)
-local collapsed = false
-local storedPosition = root.Position
-
-local function collapseUI()
-	if collapsed then return end
-	storedPosition = root.Position
-	root.Visible = false
-	-- place logo at same spot as root center
-	logoBtn.Visible = true
-	collapsed = true
-end
-
-local function expandUI()
-	if not collapsed then return end
-	root.Position = storedPosition or UDim2.new(0.5, -UI_WIDTH/2, 0.5, -UI_HEIGHT/2)
-	root.Visible = true
-	collapsed = false
-end
-
-logoBtn.MouseButton1Click:Connect(function()
-	if collapsed then expandUI() else collapseUI() end
+Header.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
 end)
 
-closeBtn.MouseButton1Click:Connect(collapseUI)
+RunService.Heartbeat:Connect(function()
+    if dragging and dragInput and dragStart and startPos then
+        local delta = dragInput.Position - dragStart
+        local newPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        MenuFrame.Position = newPos
+    end
+end)
 
--- Start visible
-root.Visible = true
-logoBtn.Visible = true
-collapsed = false
-
-print("[MinhZuTa] GUI created. Replace FramKimC/FramKeo placeholders with your in-game logic if needed.")
+-- Done
+print("[MinhZuTa] Menu ready. Toggle with the round logo.")
