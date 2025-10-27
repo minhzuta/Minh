@@ -1,200 +1,318 @@
--- 🌙 MinhZuTa =} Free key
--- Modern Glass UI | PC + Mobile supported
+-- LocalScript for "MinhZuTa" UI (Roblox Studio, client-side)
+-- Put this LocalScript under StarterGui -> MinhZuTa
 
-if game.CoreGui:FindFirstChild("MinhZuTa") then
-	game.CoreGui.MinhZuTa:Destroy()
-end
-
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 
--- Main GUI
-local Gui = Instance.new("ScreenGui")
-Gui.Name = "MinhZuTa"
-Gui.ResetOnSpawn = false
-Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-Gui.Parent = game.CoreGui
+local player = Players.LocalPlayer
+local gui = script.Parent
+gui.ResetOnSpawn = false
 
--- Button mở menu (Logo)
-local OpenButton = Instance.new("ImageButton")
-OpenButton.Name = "OpenButton"
-OpenButton.Parent = Gui
-OpenButton.Size = UDim2.new(0, 70, 0, 70)
-OpenButton.Position = UDim2.new(0, 30, 0, 150)
-OpenButton.BackgroundTransparency = 1
-OpenButton.Image = "rbxassetid://86575734561372"
-OpenButton.Draggable = true
+-- CONFIG
+local LOGO_ID = "rbxassetid://86575734561372"  -- logo mở/thu
+local BACK_ID = "rbxassetid://865757345613"   -- ảnh nền anime (bìa)
+local UI_WIDTH = 520
+local UI_HEIGHT = 330
 
--- Khung chính (Glass UI)
-local MainFrame = Instance.new("Frame")
-MainFrame.Name = "MainFrame"
-MainFrame.Parent = Gui
-MainFrame.Size = UDim2.new(0, 520, 0, 330)
-MainFrame.Position = UDim2.new(0.5, -260, 0.5, -165)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.BackgroundTransparency = 0.4
-MainFrame.Visible = true
-MainFrame.Active = true
-MainFrame.Draggable = true
+-- Clear potential old children (safety)
+for _, c in pairs(gui:GetChildren()) do
+    if c:IsA("Frame") or c:IsA("ImageLabel") or c:IsA("ImageButton") or c:IsA("TextButton") or c:IsA("TextLabel") then
+        -- keep script only
+    end
+end
 
-local blur = Instance.new("UIStroke")
-blur.Parent = MainFrame
-blur.Thickness = 1.5
-blur.Color = Color3.fromRGB(200, 200, 200)
-blur.Transparency = 0.7
+-- Root container (will be created dynamically)
+local root = Instance.new("Frame")
+root.Name = "Root"
+root.Size = UDim2.new(0, UI_WIDTH, 0, UI_HEIGHT)
+root.Position = UDim2.new(0.5, -UI_WIDTH/2, 0.5, -UI_HEIGHT/2)
+root.AnchorPoint = Vector2.new(0.5, 0.5)
+root.BackgroundTransparency = 1
+root.Parent = gui
 
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 12)
-corner.Parent = MainFrame
+-- Background image (cover banner)
+local cover = Instance.new("ImageLabel")
+cover.Name = "Cover"
+cover.Size = UDim2.new(1, 0, 0, 120)
+cover.Position = UDim2.new(0, 0, 0, 0)
+cover.BackgroundTransparency = 1
+cover.Image = BACK_ID
+cover.ScaleType = Enum.ScaleType.Crop
+cover.ImageTransparency = 0
+cover.Parent = root
 
--- Tiêu đề
-local Title = Instance.new("TextLabel")
-Title.Parent = MainFrame
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.BackgroundTransparency = 1
-Title.Text = "MinhZuTa =} Free key"
-Title.Font = Enum.Font.SourceSansBold
-Title.TextSize = 20
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.Position = UDim2.new(0, 15, 0, 0)
+-- Glass panel (main)
+local panel = Instance.new("Frame")
+panel.Name = "Panel"
+panel.Size = UDim2.new(1, 0, 1, -40)
+panel.Position = UDim2.new(0, 0, 0, 40)
+panel.BackgroundColor3 = Color3.fromRGB(25,25,25)
+panel.BackgroundTransparency = 0.5
+panel.Parent = root
 
--- Nút đóng
-local Close = Instance.new("TextButton")
-Close.Parent = MainFrame
-Close.Size = UDim2.new(0, 30, 0, 30)
-Close.Position = UDim2.new(1, -40, 0, 5)
-Close.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
-Close.Text = "×"
-Close.Font = Enum.Font.SourceSansBold
-Close.TextSize = 20
-Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+local panelCorner = Instance.new("UICorner")
+panelCorner.CornerRadius = UDim.new(0, 12)
+panelCorner.Parent = panel
+
+-- subtle border stroke
+local stroke = Instance.new("UIStroke")
+stroke.Parent = panel
+stroke.Color = Color3.fromRGB(200,200,200)
+stroke.Transparency = 0.8
+stroke.Thickness = 1.2
+
+-- Title bar (on top of panel)
+local title = Instance.new("TextLabel")
+title.Name = "Title"
+title.Size = UDim2.new(1, -20, 0, 36)
+title.Position = UDim2.new(0, 10, 0, 4)
+title.BackgroundTransparency = 1
+title.Text = "MinhZuTa =} Free key"
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = panel
+
+-- Close X button (inside panel)
+local closeBtn = Instance.new("TextButton")
+closeBtn.Name = "CloseBtn"
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -40, 0, 5)
+closeBtn.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
+closeBtn.Text = "×"
+closeBtn.Font = Enum.Font.SourceSansBold
+closeBtn.TextSize = 20
+closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+closeBtn.Parent = panel
 
 local closeCorner = Instance.new("UICorner")
-closeCorner.CornerRadius = UDim.new(1, 0)
-closeCorner.Parent = Close
+closeCorner.CornerRadius = UDim.new(1,0)
+closeCorner.Parent = closeBtn
 
--- Tab bên trái
-local LeftTab = Instance.new("Frame")
-LeftTab.Parent = MainFrame
-LeftTab.Size = UDim2.new(0, 130, 1, -50)
-LeftTab.Position = UDim2.new(0, 10, 0, 45)
-LeftTab.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
-LeftTab.BackgroundTransparency = 0.3
+-- Left tabs frame
+local left = Instance.new("Frame")
+left.Name = "Left"
+left.Size = UDim2.new(0, 130, 1, -60)
+left.Position = UDim2.new(0, 10, 0, 50)
+left.BackgroundTransparency = 0.3
+left.BackgroundColor3 = Color3.fromRGB(40,40,45)
+left.Parent = panel
 
-local LeftCorner = Instance.new("UICorner")
-LeftCorner.CornerRadius = UDim.new(0, 10)
-LeftCorner.Parent = LeftTab
+local leftCorner = Instance.new("UICorner")
+leftCorner.CornerRadius = UDim.new(0, 8)
+leftCorner.Parent = left
 
--- Nội dung bên phải
-local Content = Instance.new("Frame")
-Content.Parent = MainFrame
-Content.Size = UDim2.new(1, -160, 1, -60)
-Content.Position = UDim2.new(0, 150, 0, 50)
-Content.BackgroundTransparency = 1
-
--- Nút tab Giới thiệu
-local Tab1 = Instance.new("TextButton")
-Tab1.Parent = LeftTab
-Tab1.Size = UDim2.new(1, -10, 0, 40)
-Tab1.Position = UDim2.new(0, 5, 0, 5)
-Tab1.Text = "Giới thiệu"
-Tab1.Font = Enum.Font.SourceSansBold
-Tab1.TextSize = 18
-Tab1.BackgroundColor3 = Color3.fromRGB(70, 70, 75)
-Tab1.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-local Tab1Corner = Instance.new("UICorner")
-Tab1Corner.CornerRadius = UDim.new(0, 8)
-Tab1Corner.Parent = Tab1
-
--- Nút tab Menu
-local Tab2 = Instance.new("TextButton")
-Tab2.Parent = LeftTab
-Tab2.Size = UDim2.new(1, -10, 0, 40)
-Tab2.Position = UDim2.new(0, 5, 0, 55)
-Tab2.Text = "Menu"
-Tab2.Font = Enum.Font.SourceSansBold
-Tab2.TextSize = 18
-Tab2.BackgroundColor3 = Color3.fromRGB(70, 70, 75)
-Tab2.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-local Tab2Corner = Instance.new("UICorner")
-Tab2Corner.CornerRadius = UDim.new(0, 8)
-Tab2Corner.Parent = Tab2
-
--- Trang "Giới thiệu"
-local Page1 = Instance.new("Frame")
-Page1.Parent = Content
-Page1.Size = UDim2.new(1, 0, 1, 0)
-Page1.BackgroundTransparency = 1
-
-local Label = Instance.new("TextLabel")
-Label.Parent = Page1
-Label.Size = UDim2.new(1, 0, 0, 30)
-Label.Position = UDim2.new(0, 0, 0.2, 0)
-Label.Text = "🌸 Cảm ơn 🌸"
-Label.Font = Enum.Font.SourceSansBold
-Label.TextSize = 22
-Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-Label.BackgroundTransparency = 1
-
--- Trang "Menu"
-local Page2 = Instance.new("Frame")
-Page2.Parent = Content
-Page2.Size = UDim2.new(1, 0, 1, 0)
-Page2.BackgroundTransparency = 1
-Page2.Visible = false
-
--- Nút trong tab Menu
-local function createButton(name, desc, posY, link)
-	local Button = Instance.new("TextButton")
-	Button.Parent = Page2
-	Button.Size = UDim2.new(1, -20, 0, 60)
-	Button.Position = UDim2.new(0, 10, 0, posY)
-	Button.BackgroundColor3 = Color3.fromRGB(60, 60, 65)
-	Button.Text = name .. "\n" .. desc
-	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Button.Font = Enum.Font.SourceSansBold
-	Button.TextSize = 18
-	Button.TextYAlignment = Enum.TextYAlignment.Center
-	Button.AutoButtonColor = true
-
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 10)
-	corner.Parent = Button
-
-	Button.MouseButton1Click:Connect(function()
-		loadstring(game:HttpGet(link))()
-	end)
+-- Tab buttons
+local function makeTabBtn(text, y)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, -10, 0, 40)
+    b.Position = UDim2.new(0, 5, 0, y)
+    b.Text = text
+    b.Font = Enum.Font.SourceSansBold
+    b.TextSize = 18
+    b.TextColor3 = Color3.fromRGB(255,255,255)
+    b.BackgroundColor3 = Color3.fromRGB(70,70,75)
+    b.Parent = left
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, 8)
+    c.Parent = b
+    return b
 end
 
-createButton("💎 Fram kim cương", "auto", 10, "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua")
-createButton("🍬 Candy Farm", "Farm kẹo tự động", 80, "https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm")
+local tabAbout = makeTabBtn("Giới thiệu", 8)
+local tabMenu  = makeTabBtn("Menu", 56)
+local tabAtiban = makeTabBtn("Atiban", 104)
 
--- Tab chuyển trang
-Tab1.MouseButton1Click:Connect(function()
-	Page1.Visible = true
-	Page2.Visible = false
-end)
+-- Content area (right)
+local content = Instance.new("Frame")
+content.Name = "Content"
+content.Size = UDim2.new(1, -160, 1, -60)
+content.Position = UDim2.new(0, 150, 0, 50)
+content.BackgroundTransparency = 1
+content.Parent = panel
 
-Tab2.MouseButton1Click:Connect(function()
-	Page1.Visible = false
-	Page2.Visible = true
-end)
+-- Pages
+local pageAbout = Instance.new("Frame"); pageAbout.Size = UDim2.new(1,0,1,0); pageAbout.BackgroundTransparency = 1; pageAbout.Parent = content
+local pageMenu = Instance.new("Frame"); pageMenu.Size = UDim2.new(1,0,1,0); pageMenu.BackgroundTransparency = 1; pageMenu.Visible = false; pageMenu.Parent = content
+local pageAtiban = Instance.new("Frame"); pageAtiban.Size = UDim2.new(1,0,1,0); pageAtiban.BackgroundTransparency = 1; pageAtiban.Visible = false; pageAtiban.Parent = content
 
--- Mở/đóng menu
-local open = true
-local function toggleMenu()
-	open = not open
-	if open then
-		MainFrame.Visible = true
-		TweenService:Create(MainFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.4}):Play()
-	else
-		TweenService:Create(MainFrame, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
-		task.wait(0.3)
-		MainFrame.Visible = false
-	end
+-- Fill About page
+local aboutLabel = Instance.new("TextLabel")
+aboutLabel.Parent = pageAbout
+aboutLabel.Size = UDim2.new(1, -20, 0, 80)
+aboutLabel.Position = UDim2.new(0, 10, 0, 20)
+aboutLabel.BackgroundTransparency = 1
+aboutLabel.Text = "🌸 Cảm ơn bạn rất nhiều 🌸\nTikTok: https://www.tiktok.com/@minhzuta"
+aboutLabel.TextWrapped = true
+aboutLabel.Font = Enum.Font.SourceSans
+aboutLabel.TextSize = 18
+aboutLabel.TextColor3 = Color3.fromRGB(255,255,255)
+
+-- Utility to create a big button in Menu page
+local function createMenuButton(parent, titleText, subtitleText, y, onClick)
+    local btn = Instance.new("TextButton")
+    btn.Parent = parent
+    btn.Size = UDim2.new(1, -20, 0, 64)
+    btn.Position = UDim2.new(0, 10, 0, y)
+    btn.BackgroundColor3 = Color3.fromRGB(60,60,65)
+    btn.Text = titleText .. "\n" .. subtitleText
+    btn.TextWrapped = true
+    btn.TextYAlignment = Enum.TextYAlignment.Center
+    btn.Font = Enum.Font.SourceSansBold
+    btn.TextSize = 18
+    btn.TextColor3 = Color3.fromRGB(255,255,255)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0,10)
+    c.Parent = btn
+    btn.MouseButton1Click:Connect(function()
+        -- safe placeholder: call onClick (developer fills it)
+        pcall(function() onClick() end)
+    end)
+    return btn
 end
 
-OpenButton.MouseButton1Click:Connect(toggleMenu)
-Close.MouseButton1Click:Connect(toggleMenu)
+-- Placeholder functions: replace these with your own safe functions / Module calls
+local function FramKimC ( )
+    -- >>> REPLACE THIS with your in-game implementation if you own the game.
+    -- e.g. require(script.Parent:WaitForChild("MyFarmModule")).StartDiamondFarm()
+    -- For now we'll show a simple notification
+    if player and player:FindFirstChildOfClass("PlayerGui") then
+        -- simple label flash
+        local notif = Instance.new("TextLabel")
+        notif.Size = UDim2.new(0,220,0,40)
+        notif.Position = UDim2.new(0.5,-110,0.1,0)
+        notif.AnchorPoint = Vector2.new(0.5,0)
+        notif.BackgroundColor3 = Color3.fromRGB(40,40,45)
+        notif.TextColor3 = Color3.fromRGB(255,255,255)
+        notif.Text = "Start Fram kim cương (dev override)"
+        notif.Font = Enum.Font.SourceSansBold
+        notif.TextSize = 16
+        notif.Parent = player.PlayerGui
+        task.delay(2, function() notif:Destroy() end)
+    end
+end
+
+local function FramKeo ( )
+    -- >>> REPLACE THIS with your in-game implementation if you own the game.
+    if player and player:FindFirstChildOfClass("PlayerGui") then
+        local notif = Instance.new("TextLabel")
+        notif.Size = UDim2.new(0,220,0,40)
+        notif.Position = UDim2.new(0.5,-110,0.1,0)
+        notif.AnchorPoint = Vector2.new(0.5,0)
+        notif.BackgroundColor3 = Color3.fromRGB(40,40,45)
+        notif.TextColor3 = Color3.fromRGB(255,255,255)
+        notif.Text = "Start Fram kẹo (dev override)"
+        notif.Font = Enum.Font.SourceSansBold
+        notif.TextSize = 16
+        notif.Parent = player.PlayerGui
+        task.delay(2, function() notif:Destroy() end)
+    end
+end
+
+-- Create Menu buttons (these run placeholders above)
+createMenuButton(pageMenu, "💎 Fram kim cương", "auto", 10, FramKimC)
+createMenuButton(pageMenu, "🍬 Candy Farm", "Farm kẹo tự động", 90, FramKeo)
+
+-- Fill Atiban page (left empty for now)
+local atibanLabel = Instance.new("TextLabel")
+atibanLabel.Parent = pageAtiban
+atibanLabel.Position = UDim2.new(0, 10, 0, 20)
+atibanLabel.Size = UDim2.new(1, -20, 0, 100)
+atibanLabel.BackgroundTransparency = 1
+atibanLabel.Text = "Atiban (placeholder)\nBạn có thể thêm chức năng bảo vệ ở đây."
+atibanLabel.TextWrapped = true
+atibanLabel.Font = Enum.Font.SourceSans
+atibanLabel.TextSize = 18
+atibanLabel.TextColor3 = Color3.fromRGB(255,255,255)
+
+-- Tab switching logic
+local function showPage(which)
+    pageAbout.Visible = (which == "about")
+    pageMenu.Visible = (which == "menu")
+    pageAtiban.Visible = (which == "atiban")
+end
+
+tabAbout.MouseButton1Click:Connect(function() showPage("about") end)
+tabMenu.MouseButton1Click:Connect(function() showPage("menu") end)
+tabAtiban.MouseButton1Click:Connect(function() showPage("atiban") end)
+
+-- Logo button (circle) to toggle collapse to only logo visible
+local logoBtn = Instance.new("ImageButton")
+logoBtn.Name = "Logo"
+logoBtn.Size = UDim2.new(0, 70, 0, 70)
+logoBtn.Position = UDim2.new(0, 30, 0, 150)
+logoBtn.AnchorPoint = Vector2.new(0,0)
+logoBtn.Image = LOGO_ID
+logoBtn.BackgroundTransparency = 1
+logoBtn.Parent = gui
+
+-- Make root draggable on touch + mouse (mobile-friendly)
+local dragging = false
+local dragStart = Vector2.new()
+local startPos = UDim2.new()
+
+local function beginDrag(input)
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = root.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end
+
+local function updateDrag(input)
+    if dragging then
+        local delta = input.Position - dragStart
+        root.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end
+
+root.InputBegan:Connect(beginDrag)
+root.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then updateDrag(input) end end)
+UserInputService.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then updateDrag(input) end end)
+UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
+
+-- Collapse/expand behavior: if collapsed -> hide root and show only logo (logo sits where user clicked)
+local collapsed = false
+local storedPosition = root.Position
+
+local function collapseUI()
+    if collapsed then return end
+    storedPosition = root.Position
+    root.Visible = false
+    logoBtn.Visible = true
+    collapsed = true
+end
+
+local function expandUI()
+    if not collapsed then return end
+    root.Position = storedPosition
+    root.Visible = true
+    logoBtn.Visible = true -- keep logo visible as well
+    collapsed = false
+end
+
+-- Connect logo click toggle
+logoBtn.MouseButton1Click:Connect(function()
+    if collapsed then
+        expandUI()
+    else
+        collapseUI()
+    end
+end)
+
+-- Connect close button to collapse (instead of destroying)
+closeBtn.MouseButton1Click:Connect(collapseUI)
+
+-- Start visible
+root.Visible = true
+logoBtn.Visible = true
+
+-- Final notes in output
+print("[MinhZuTa] GUI loaded (Studio-safe). Replace placeholder functions FramKimC / FramKeo with your own in-game logic.")
