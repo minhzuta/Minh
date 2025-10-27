@@ -43,8 +43,8 @@ local Window = Fluent:CreateWindow({
 
 -- 📑 Các tab (mục chính)
 local Tabs = {
-	Main0 = Window:AddTab({ Title = "một số kênh🤓" }),  -- 👈 đổi tên tab 1
-	Main1 = Window:AddTab({ Title = "grow a gaden 🌱🌴🌵🌲" }),  -- 👈 đổi tên tab 2
+	Main0 = Window:AddTab({ Title = "auto" }),  -- 👈 đổi tên tab 1
+	Main1 = Window:AddTab({ Title = "99 nights in the forest" }),  -- 👈 đổi tên tab 2
 }
 
 ------------------------------------------------
