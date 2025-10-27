@@ -1,28 +1,86 @@
--- 🧱 Nút nhỏ mở/đóng menu
+-- 🧱 Tạo ScreenGui + nút mở/đóng menu
+local ScreenGui = Instance.new("ScreenGui")
 local ToggleButton = Instance.new("ImageButton")
+local UICorner = Instance.new("UICorner")
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
 ToggleButton.Parent = ScreenGui
 ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ToggleButton.BorderSizePixel = 0
 ToggleButton.Position = UDim2.new(0.05, 0, 0.3, 0)
-ToggleButton.Size = UDim2.new(0, 50, 0, 50)
-ToggleButton.Image = "rbxassetid://90677395878536"
+ToggleButton.Size = UDim2.new(0, 45, 0, 45)
 ToggleButton.Draggable = true
+ToggleButton.Image = "rbxassetid://90677395878536"
 
-local UICorner2 = Instance.new("UICorner")
-UICorner2.CornerRadius = UDim.new(1, 10)
-UICorner2.Parent = ToggleButton
+UICorner.CornerRadius = UDim.new(1, 10)
+UICorner.Parent = ToggleButton
 
--- Biến lưu trạng thái menu
+---------------------------------------------------
+-- 🪟 Load Fluent UI
+---------------------------------------------------
+repeat task.wait() until game:IsLoaded()
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+local Window = Fluent:CreateWindow({
+	Title = "MinhZuTa =}",
+	SubTitle = "Free key",
+	TabWidth = 157,
+	Size = UDim2.fromOffset(450, 300),
+	Acrylic = true,
+	Theme = "Dark",
+	MinimizeKey = Enum.KeyCode.End
+})
+
+local Tabs = {
+	Main0 = Window:AddTab({ Title = "Giới thiệu" }),
+	Main1 = Window:AddTab({ Title = "Auto kim cương" }),
+}
+
+---------------------------------------------------
+-- 🌟 Nút test trong tab
+---------------------------------------------------
+Tabs.Main0:AddButton({
+	Title = "Tiktok MinhZuTa",
+	Description = "Follow để nhận script mới",
+	Callback = function()
+		setclipboard("https://www.tiktok.com/@minhzuta")
+	end
+})
+
+Tabs.Main1:AddButton({
+	Title = "Candy Farm",
+	Description = "Farm kẹo tự động",
+	Callback = function()
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))()
+	end
+})
+
+---------------------------------------------------
+-- 🔘 Nút ẩn/hiện menu
+---------------------------------------------------
 local isOpen = true
-local FluentUI = Window -- Menu Fluent của bạn
-
--- 🖱️ Khi bấm nút → mở/đóng menu
 ToggleButton.MouseButton1Click:Connect(function()
 	isOpen = not isOpen
-	if isOpen then
-		FluentUI:SelectTab(Tabs.Main0) -- Mở lại giao diện
-		FluentUI:Minimize(false)       -- Gọi mở menu
-	else
-		FluentUI:Minimize(true)        -- Gọi đóng menu
+	for _, gui in ipairs(game.CoreGui:GetChildren()) do
+		if gui.Name == "Fluent" then
+			gui.Enabled = isOpen
+		end
+	end
+end)
+
+---------------------------------------------------
+-- ⌨️ Phím tắt End (ẩn/hiện luôn)
+---------------------------------------------------
+game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
+	if gp then return end
+	if input.KeyCode == Enum.KeyCode.End then
+		isOpen = not isOpen
+		for _, gui in ipairs(game.CoreGui:GetChildren()) do
+			if gui.Name == "Fluent" then
+				gui.Enabled = isOpen
+			end
+		end
 	end
 end)
