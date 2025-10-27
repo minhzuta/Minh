@@ -36,7 +36,7 @@ local Window = Fluent:CreateWindow({
 -- 📑 Các tab (mục chính)
 local Tabs = {
 	Main0 = Window:AddTab({ Title = "giới thiệu" }),  
-	Main1 = Window:AddTab({ Title = "auto kim cương" }),  
+	Main1 = Window:AddTab({ Title = "menu" }),  
 }
 
 ------------------------------------------------
