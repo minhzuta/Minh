@@ -1,18 +1,25 @@
--- 🧩 Giao diện nút bật/tắt menu
+-- 🧩 Giao diện nút bật/tắt menu (hỗ trợ điện thoại)
+local player = game.Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
+
 local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ToggleMenuGui"
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui  -- ⚠️ Đưa vào PlayerGui để bấm được trên mobile
+
 local ImageButton = Instance.new("ImageButton")
 local UICorner = Instance.new("UICorner")
-
-ScreenGui.Parent = game.CoreGui
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 ImageButton.Parent = ScreenGui
 ImageButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ImageButton.BorderSizePixel = 0
-ImageButton.Position = UDim2.new(0.1, 0, 0.16, 0)
-ImageButton.Size = UDim2.new(0, 40, 0, 40)
-ImageButton.Draggable = true
+ImageButton.Position = UDim2.new(0.05, 0, 0.25, 0)
+ImageButton.Size = UDim2.new(0, 60, 0, 60)
 ImageButton.Image = "http://www.roblox.com/asset/?id=90677395878536"
+ImageButton.Active = true
+ImageButton.Selectable = true
+ImageButton.Draggable = true
 
 UICorner.CornerRadius = UDim.new(1, 10)
 UICorner.Parent = ImageButton
@@ -21,64 +28,59 @@ UICorner.Parent = ImageButton
 repeat task.wait() until game:IsLoaded()
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
--- 🪟 Tạo cửa sổ menu
+-- 🪟 Cửa sổ menu
 local Window = Fluent:CreateWindow({
-	Title = "MinhZuTa =}",         
-	SubTitle = "Free key",             
+	Title = "MinhZuTa =}",
+	SubTitle = "Free key",
 	TabWidth = 157,
 	Size = UDim2.fromOffset(450, 300),
 	Acrylic = true,
-	Theme = "Dark",                  
-	MinimizeKey = Enum.KeyCode.End
+	Theme = "Dark",
 })
 
--- 📑 Các tab (mục chính)
+-- 📑 Tabs
 local Tabs = {
-	Main0 = Window:AddTab({ Title = "giới thiệu" }),  
-	Main1 = Window:AddTab({ Title = "menu" }),  
+	Main0 = Window:AddTab({ Title = "Giới thiệu" }),
+	Main1 = Window:AddTab({ Title = "Menu" }),
 }
 
 ------------------------------------------------
--- TAB 1: Các kênh tiktok
+-- TAB 1: Thông tin
 ------------------------------------------------
 Tabs.Main0:AddButton({
-	Title = "tiktok MinhZuTa",           
+	Title = "Tiktok MinhZuTa",
 	Description = "oách xà lách vô cùng",
 	Callback = function()
-		setclipboard("https://www.tiktok.com/@minhzuta")  
+		setclipboard("https://www.tiktok.com/@minhzuta")
 	end
 })
 
 Tabs.Main0:AddButton({
-	Title = "tik",
-	Description = "làm chơi thui",
+	Title = "Tik",
+	Description = "Làm chơi thui",
 	Callback = function()
-		setclipboard("https://www.tiktok.com/@minhzuta")    
+		setclipboard("https://www.tiktok.com/@minhzuta")
 	end
 })
 
 Tabs.Main0:AddButton({
-	Title = "tiktok",
-	Description = "fl tiktok để biết thêm nhiều script",
+	Title = "Tiktok 2",
+	Description = "Follow để biết thêm nhiều script",
 	Callback = function()
 		setclipboard("https://www.tiktok.com/@b.yt03?_t=ZS-90QsHmSjaiu&_r=1")
 	end
 })
 
 ------------------------------------------------
--- TAB 2: Ví dụ thêm script
+-- TAB 2: Script ví dụ
 ------------------------------------------------
 Tabs.Main1:AddButton({
-	Title = "fram kim cương",                             
-	Description = "auto",
+	Title = "Farm kim cương",
+	Description = "Auto farm",
 	Callback = function()
-		local Settings = {
-			JoinTeam = "Pirates";   
-			Translator = true;      
-		}
 		loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))()
 	end
-}) 
+})
 
 Tabs.Main1:AddButton({
 	Title = "Candy Farm",
@@ -89,25 +91,30 @@ Tabs.Main1:AddButton({
 })
 
 ------------------------------------------------
--- ⚡ Thêm chức năng ẩn / hiện menu
+-- ⚡ Ẩn/hiện menu (dành cho điện thoại)
 ------------------------------------------------
 local menuVisible = true
 local TweenService = game:GetService("TweenService")
 
 local function toggleMenu()
 	menuVisible = not menuVisible
-	local targetTransparency = menuVisible and 0 or 1
 
-	-- Làm mượt hiệu ứng ẩn/hiện
+	local targetTransparency = menuVisible and 0 or 1
+	local targetEnabled = menuVisible
+
 	for _, gui in pairs(Window.gui:GetDescendants()) do
-		if gui:IsA("Frame") or gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("ImageLabel") then
-			TweenService:Create(gui, TweenInfo.new(0.3), {BackgroundTransparency = targetTransparency, TextTransparency = targetTransparency, ImageTransparency = targetTransparency}):Play()
+		if gui:IsA("GuiObject") then
+			local tween = TweenService:Create(gui, TweenInfo.new(0.3), {
+				BackgroundTransparency = targetTransparency,
+				TextTransparency = targetTransparency,
+				ImageTransparency = targetTransparency
+			})
+			tween:Play()
 		end
 	end
 
-	-- Tắt tương tác khi ẩn
-	Window.gui.Enabled = menuVisible
+	Window.gui.Enabled = targetEnabled
 end
 
--- 👇 Bấm nút để đóng/mở menu
+-- 📱 Cảm ứng mobile / PC đều hoạt động
 ImageButton.MouseButton1Click:Connect(toggleMenu)
