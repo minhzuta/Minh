@@ -1,4 +1,4 @@
--- LocalScript for "MinhZuTa" UI (Roblox Studio, client-side)
+-- LocalScript for "MinhZuTa" UI (Studio-safe) — FIXED version
 -- Put this LocalScript under StarterGui -> MinhZuTa
 
 local Players = game:GetService("Players")
@@ -15,23 +15,17 @@ local BACK_ID = "rbxassetid://865757345613"   -- ảnh nền anime (bìa)
 local UI_WIDTH = 520
 local UI_HEIGHT = 330
 
--- Clear potential old children (safety)
-for _, c in pairs(gui:GetChildren()) do
-    if c:IsA("Frame") or c:IsA("ImageLabel") or c:IsA("ImageButton") or c:IsA("TextButton") or c:IsA("TextLabel") then
-        -- keep script only
-    end
-end
-
--- Root container (will be created dynamically)
+-- Create root container (Frame)
 local root = Instance.new("Frame")
 root.Name = "Root"
 root.Size = UDim2.new(0, UI_WIDTH, 0, UI_HEIGHT)
 root.Position = UDim2.new(0.5, -UI_WIDTH/2, 0.5, -UI_HEIGHT/2)
 root.AnchorPoint = Vector2.new(0.5, 0.5)
 root.BackgroundTransparency = 1
+root.Active = true            -- << important for receiving Input events on some clients
 root.Parent = gui
 
--- Background image (cover banner)
+-- Background cover/banner image
 local cover = Instance.new("ImageLabel")
 cover.Name = "Cover"
 cover.Size = UDim2.new(1, 0, 0, 120)
@@ -50,19 +44,19 @@ panel.Position = UDim2.new(0, 0, 0, 40)
 panel.BackgroundColor3 = Color3.fromRGB(25,25,25)
 panel.BackgroundTransparency = 0.5
 panel.Parent = root
+panel.Active = true          -- ensure panel can receive input if needed
 
 local panelCorner = Instance.new("UICorner")
 panelCorner.CornerRadius = UDim.new(0, 12)
 panelCorner.Parent = panel
 
--- subtle border stroke
 local stroke = Instance.new("UIStroke")
 stroke.Parent = panel
 stroke.Color = Color3.fromRGB(200,200,200)
 stroke.Transparency = 0.8
 stroke.Thickness = 1.2
 
--- Title bar (on top of panel)
+-- Title
 local title = Instance.new("TextLabel")
 title.Name = "Title"
 title.Size = UDim2.new(1, -20, 0, 36)
@@ -75,7 +69,7 @@ title.TextColor3 = Color3.fromRGB(255,255,255)
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = panel
 
--- Close X button (inside panel)
+-- Close (collapse) button
 local closeBtn = Instance.new("TextButton")
 closeBtn.Name = "CloseBtn"
 closeBtn.Size = UDim2.new(0, 30, 0, 30)
@@ -91,7 +85,7 @@ local closeCorner = Instance.new("UICorner")
 closeCorner.CornerRadius = UDim.new(1,0)
 closeCorner.Parent = closeBtn
 
--- Left tabs frame
+-- Left tabs
 local left = Instance.new("Frame")
 left.Name = "Left"
 left.Size = UDim2.new(0, 130, 1, -60)
@@ -104,7 +98,6 @@ local leftCorner = Instance.new("UICorner")
 leftCorner.CornerRadius = UDim.new(0, 8)
 leftCorner.Parent = left
 
--- Tab buttons
 local function makeTabBtn(text, y)
     local b = Instance.new("TextButton")
     b.Size = UDim2.new(1, -10, 0, 40)
@@ -125,7 +118,7 @@ local tabAbout = makeTabBtn("Giới thiệu", 8)
 local tabMenu  = makeTabBtn("Menu", 56)
 local tabAtiban = makeTabBtn("Atiban", 104)
 
--- Content area (right)
+-- Right content area
 local content = Instance.new("Frame")
 content.Name = "Content"
 content.Size = UDim2.new(1, -160, 1, -60)
@@ -133,12 +126,11 @@ content.Position = UDim2.new(0, 150, 0, 50)
 content.BackgroundTransparency = 1
 content.Parent = panel
 
--- Pages
 local pageAbout = Instance.new("Frame"); pageAbout.Size = UDim2.new(1,0,1,0); pageAbout.BackgroundTransparency = 1; pageAbout.Parent = content
 local pageMenu = Instance.new("Frame"); pageMenu.Size = UDim2.new(1,0,1,0); pageMenu.BackgroundTransparency = 1; pageMenu.Visible = false; pageMenu.Parent = content
 local pageAtiban = Instance.new("Frame"); pageAtiban.Size = UDim2.new(1,0,1,0); pageAtiban.BackgroundTransparency = 1; pageAtiban.Visible = false; pageAtiban.Parent = content
 
--- Fill About page
+-- About content
 local aboutLabel = Instance.new("TextLabel")
 aboutLabel.Parent = pageAbout
 aboutLabel.Size = UDim2.new(1, -20, 0, 80)
@@ -150,7 +142,7 @@ aboutLabel.Font = Enum.Font.SourceSans
 aboutLabel.TextSize = 18
 aboutLabel.TextColor3 = Color3.fromRGB(255,255,255)
 
--- Utility to create a big button in Menu page
+-- Menu buttons helper
 local function createMenuButton(parent, titleText, subtitleText, y, onClick)
     local btn = Instance.new("TextButton")
     btn.Parent = parent
@@ -167,55 +159,40 @@ local function createMenuButton(parent, titleText, subtitleText, y, onClick)
     c.CornerRadius = UDim.new(0,10)
     c.Parent = btn
     btn.MouseButton1Click:Connect(function()
-        -- safe placeholder: call onClick (developer fills it)
         pcall(function() onClick() end)
     end)
     return btn
 end
 
--- Placeholder functions: replace these with your own safe functions / Module calls
-local function FramKimC ( )
-    -- >>> REPLACE THIS with your in-game implementation if you own the game.
-    -- e.g. require(script.Parent:WaitForChild("MyFarmModule")).StartDiamondFarm()
-    -- For now we'll show a simple notification
-    if player and player:FindFirstChildOfClass("PlayerGui") then
-        -- simple label flash
-        local notif = Instance.new("TextLabel")
-        notif.Size = UDim2.new(0,220,0,40)
-        notif.Position = UDim2.new(0.5,-110,0.1,0)
-        notif.AnchorPoint = Vector2.new(0.5,0)
-        notif.BackgroundColor3 = Color3.fromRGB(40,40,45)
-        notif.TextColor3 = Color3.fromRGB(255,255,255)
-        notif.Text = "Start Fram kim cương (dev override)"
-        notif.Font = Enum.Font.SourceSansBold
-        notif.TextSize = 16
-        notif.Parent = player.PlayerGui
-        task.delay(2, function() notif:Destroy() end)
-    end
+-- Placeholder actions (SAFE: only show notification in PlayerGui)
+local function notify(text)
+    if not player or not player:FindFirstChildOfClass("PlayerGui") then return end
+    local pg = player:FindFirstChildOfClass("PlayerGui")
+    local lab = Instance.new("TextLabel")
+    lab.Size = UDim2.new(0,260,0,40)
+    lab.Position = UDim2.new(0.5, -130, 0.08, 0)
+    lab.AnchorPoint = Vector2.new(0.5,0)
+    lab.BackgroundColor3 = Color3.fromRGB(35,35,40)
+    lab.TextColor3 = Color3.fromRGB(255,255,255)
+    lab.Text = text
+    lab.Font = Enum.Font.SourceSansBold
+    lab.TextSize = 16
+    lab.Name = "MinhZuTaNotify"
+    lab.Parent = pg
+    task.delay(2, function() if lab and lab.Parent then lab:Destroy() end end)
 end
 
-local function FramKeo ( )
-    -- >>> REPLACE THIS with your in-game implementation if you own the game.
-    if player and player:FindFirstChildOfClass("PlayerGui") then
-        local notif = Instance.new("TextLabel")
-        notif.Size = UDim2.new(0,220,0,40)
-        notif.Position = UDim2.new(0.5,-110,0.1,0)
-        notif.AnchorPoint = Vector2.new(0.5,0)
-        notif.BackgroundColor3 = Color3.fromRGB(40,40,45)
-        notif.TextColor3 = Color3.fromRGB(255,255,255)
-        notif.Text = "Start Fram kẹo (dev override)"
-        notif.Font = Enum.Font.SourceSansBold
-        notif.TextSize = 16
-        notif.Parent = player.PlayerGui
-        task.delay(2, function() notif:Destroy() end)
-    end
+local function FramKimC()
+    notify("Start Fram kim cương (placeholder)")
+end
+local function FramKeo()
+    notify("Start Fram kẹo (placeholder)")
 end
 
--- Create Menu buttons (these run placeholders above)
 createMenuButton(pageMenu, "💎 Fram kim cương", "auto", 10, FramKimC)
 createMenuButton(pageMenu, "🍬 Candy Farm", "Farm kẹo tự động", 90, FramKeo)
 
--- Fill Atiban page (left empty for now)
+-- Atiban page placeholder
 local atibanLabel = Instance.new("TextLabel")
 atibanLabel.Parent = pageAtiban
 atibanLabel.Position = UDim2.new(0, 10, 0, 20)
@@ -227,18 +204,17 @@ atibanLabel.Font = Enum.Font.SourceSans
 atibanLabel.TextSize = 18
 atibanLabel.TextColor3 = Color3.fromRGB(255,255,255)
 
--- Tab switching logic
+-- Tab switching
 local function showPage(which)
     pageAbout.Visible = (which == "about")
     pageMenu.Visible = (which == "menu")
     pageAtiban.Visible = (which == "atiban")
 end
-
 tabAbout.MouseButton1Click:Connect(function() showPage("about") end)
 tabMenu.MouseButton1Click:Connect(function() showPage("menu") end)
 tabAtiban.MouseButton1Click:Connect(function() showPage("atiban") end)
 
--- Logo button (circle) to toggle collapse to only logo visible
+-- Logo button (on ScreenGui) to toggle collapse
 local logoBtn = Instance.new("ImageButton")
 logoBtn.Name = "Logo"
 logoBtn.Size = UDim2.new(0, 70, 0, 70)
@@ -246,18 +222,20 @@ logoBtn.Position = UDim2.new(0, 30, 0, 150)
 logoBtn.AnchorPoint = Vector2.new(0,0)
 logoBtn.Image = LOGO_ID
 logoBtn.BackgroundTransparency = 1
+logoBtn.ZIndex = 10
 logoBtn.Parent = gui
 
--- Make root draggable on touch + mouse (mobile-friendly)
+-- Dragging (mobile-friendly) implementation
 local dragging = false
-local dragStart = Vector2.new()
-local startPos = UDim2.new()
+local dragStart = Vector2.new(0,0)
+local startPos = root.Position
 
-local function beginDrag(input)
+local function inputBegan(input)
     if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
         dragStart = input.Position
         startPos = root.Position
+        -- listen for end
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
                 dragging = false
@@ -266,19 +244,22 @@ local function beginDrag(input)
     end
 end
 
-local function updateDrag(input)
-    if dragging then
+local function inputChanged(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
         local delta = input.Position - dragStart
         root.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 end
 
-root.InputBegan:Connect(beginDrag)
-root.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then updateDrag(input) end end)
-UserInputService.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then updateDrag(input) end end)
-UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
+-- Connect both root and panel so user can drag from either area
+root.InputBegan:Connect(inputBegan)
+root.InputChanged:Connect(inputChanged)
+panel.InputBegan:Connect(inputBegan)
+panel.InputChanged:Connect(inputChanged)
+UserInputService.InputChanged:Connect(inputChanged)
+UserInputService.InputEnded:Connect(function(inp) if inp.UserInputType == Enum.UserInputType.Touch or inp.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
 
--- Collapse/expand behavior: if collapsed -> hide root and show only logo (logo sits where user clicked)
+-- Collapse / Expand logic
 local collapsed = false
 local storedPosition = root.Position
 
@@ -286,33 +267,28 @@ local function collapseUI()
     if collapsed then return end
     storedPosition = root.Position
     root.Visible = false
+    -- ensure logo remains visible and on top
     logoBtn.Visible = true
     collapsed = true
 end
 
 local function expandUI()
     if not collapsed then return end
-    root.Position = storedPosition
+    root.Position = storedPosition or UDim2.new(0.5, -UI_WIDTH/2, 0.5, -UI_HEIGHT/2)
     root.Visible = true
-    logoBtn.Visible = true -- keep logo visible as well
     collapsed = false
 end
 
--- Connect logo click toggle
 logoBtn.MouseButton1Click:Connect(function()
-    if collapsed then
-        expandUI()
-    else
-        collapseUI()
-    end
+    if collapsed then expandUI() else collapseUI() end
 end)
 
--- Connect close button to collapse (instead of destroying)
+-- Close button collapses
 closeBtn.MouseButton1Click:Connect(collapseUI)
 
--- Start visible
+-- Initial state
 root.Visible = true
 logoBtn.Visible = true
+collapsed = false
 
--- Final notes in output
-print("[MinhZuTa] GUI loaded (Studio-safe). Replace placeholder functions FramKimC / FramKeo with your own in-game logic.")
+print("[MinhZuTa] GUI loaded (Studio-fixed). Replace FramKimC / FramKeo with your game logic.")
