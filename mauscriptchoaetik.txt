@@ -80,16 +80,13 @@ Tabs.Main1:AddButton({
 		}
 		loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))()
 	end
-})
+}) 
 
-Tabs.Main2:AddButton({
-	Title = "fram kẹo",                             
-	Description = "auto",
+-- 👇 Nút mới cho script CandyFarm
+Tabs.Main1:AddButton({
+	Title = "Candy Farm",
+	Description = "Farm kẹo tự động",
 	Callback = function()
-		local Settings = {
-			JoinTeam = "Pirates";   
-			Translator = true;      
-		}
 		loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))()
 	end
 })
