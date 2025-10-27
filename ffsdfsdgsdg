@@ -1,143 +1,105 @@
-ocal ScreenGui = Instance.new("ScreenGui")
-local ImageButton = Instance.new("ImageButton")
-local UICorner = Instance.new("UICorner")
+-- 📜 Menu tròn "MinhZuTa" dành cho PC + Mobile
 
-ScreenGui.Parent = game.CoreGui
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-ImageButton.Parent = ScreenGui
-ImageButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ImageButton.BorderSizePixel = 0
-ImageButton.Position = UDim2.new(0.10615778, 0, 0.16217947, 0)
-ImageButton.Size = UDim2.new(0, 40, 0, 40)
-ImageButton.Draggable = true
-ImageButton.Image = "http://www.roblox.com/asset/?id=90677395878536"
-
-UICorner.CornerRadius = UDim.new(1, 10)
-UICorner.Parent = ImageButton
-
-ImageButton.MouseButton1Down:Connect(function()
-	game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.End, false, game)
-end)
-
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-repeat wait() until game:IsLoaded()
-
-local Window = Fluent:CreateWindow({
-	Title = "MinhZuTa =}",         
-	SubTitle = "Free key",             
-	TabWidth = 157,
-	Size = UDim2.fromOffset(450, 300),
-	Acrylic = true,
-	Theme = "Dark",                  
-	MinimizeKey = Enum.KeyCode.End
-})
-
--- 📑 Các tab (mục chính)
-local Tabs = {
-	Main0 = Window:AddTab({ Title = "giới thiệu" }),  
-	Main1 = Window:AddTab({ Title = "menu" }),  
-}
-
-------------------------------------------------
--- TAB 1: Các kênh tiktok
-------------------------------------------------
-Tabs.Main0:AddButton({
-	Title = "tiktok MinhZuTa",           
-	Description = "oách xà lách vô cùng",
-	Callback = function()
-		setclipboard("https://www.tiktok.com/@minhzuta")  
-	end
-})
-
-Tabs.Main0:AddButton({
-	Title = "tik",
-	Description = "làm chơi thui",
-	Callback = function()
-		setclipboard("https://www.tiktok.com/@minhzuta")    
-	end
-})
-
-Tabs.Main0:AddButton({
-	Title = "tiktok",
-	Description = "fl tiktok để biết thêm nhiều script",
-	Callback = function()
-		setclipboard("https://www.tiktok.com/@b.yt03?_t=ZS-90QsHmSjaiu&_r=1")
-	end
-})
-
-------------------------------------------------
--- TAB 2: Ví dụ thêm script
-------------------------------------------------
-Tabs.Main1:AddButton({
-	Title = "fram kim cương",                             
-	Description = "auto",
-	Callback = function()
-		local Settings = {
-			JoinTeam = "Pirates";   
-			Translator = true;      
-		}
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))()
-	end
-}) 
-
--- 👇 Nút mới cho script CandyFarm
-Tabs.Main1:AddButton({
-	Title = "Candy Farm",
-	Description = "Farm kẹo tự động",
-	Callback = function()
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))()
-	end
-})
--- ⚡ Thêm đoạn này vào CUỐI SCRIPT bạn gửi
-
--- 🪄 Nút mở / tắt menu (mobile & pc)
-local Player = game.Players.LocalPlayer
-local PlayerGui = Player:WaitForChild("PlayerGui")
-
-local ToggleGui = Instance.new("ScreenGui")
-ToggleGui.Name = "MenuToggleGui"
-ToggleGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ToggleGui.ResetOnSpawn = false
-ToggleGui.Parent = PlayerGui
-
-local ToggleButton = Instance.new("ImageButton")
-ToggleButton.Parent = ToggleGui
-ToggleButton.Size = UDim2.new(0, 60, 0, 60)
-ToggleButton.Position = UDim2.new(0.05, 0, 0.25, 0)
-ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ToggleButton.Image = "rbxassetid://90677395878536"
-ToggleButton.AutoButtonColor = true
-ToggleButton.Draggable = true
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(1, 0)
-UICorner.Parent = ToggleButton
-
--- ⚙️ Cấu hình toggle
-local menuVisible = true
-
-local function setMenuVisible(state)
-	menuVisible = state
-	for _, gui in pairs(PlayerGui:GetChildren()) do
-		-- Ẩn hoặc hiện tất cả GUI trừ nút toggle
-		if gui ~= ToggleGui then
-			if gui:IsA("ScreenGui") then
-				gui.Enabled = menuVisible
-			end
-		end
-	end
-
-	-- Hiệu ứng đổi màu nút khi bật/tắt
-	TweenService:Create(ToggleButton, TweenInfo.new(0.25), {
-		BackgroundColor3 = menuVisible and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(80, 0, 0)
-	}):Play()
+-- Xóa GUI cũ nếu có
+if game.CoreGui:FindFirstChild("MinhZuTa") then
+    game.CoreGui.MinhZuTa:Destroy()
 end
 
--- 🖱️ Gán sự kiện click (điện thoại / PC)
-ToggleButton.MouseButton1Click:Connect(function()
-	setMenuVisible(not menuVisible)
+-- Tạo ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "MinhZuTa"
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.ResetOnSpawn = false
+
+-- Nút logo để mở menu
+local OpenButton = Instance.new("ImageButton")
+OpenButton.Name = "OpenButton"
+OpenButton.Parent = ScreenGui
+OpenButton.BackgroundTransparency = 1
+OpenButton.Size = UDim2.new(0, 60, 0, 60)
+OpenButton.Position = UDim2.new(0, 20, 0, 100)
+OpenButton.Image = "rbxassetid://86575734561372"
+OpenButton.Active = true
+OpenButton.Draggable = true
+
+-- Menu hình tròn
+local CircleMenu = Instance.new("ImageLabel")
+CircleMenu.Name = "CircleMenu"
+CircleMenu.Parent = ScreenGui
+CircleMenu.Size = UDim2.new(0, 250, 0, 250)
+CircleMenu.Position = UDim2.new(0, 100, 0, 100)
+CircleMenu.Image = "rbxassetid://865757345613"
+CircleMenu.BackgroundTransparency = 1
+CircleMenu.Visible = true
+CircleMenu.Active = true
+CircleMenu.Draggable = true
+
+-- Hiệu ứng bo tròn
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(1, 0)
+UICorner.Parent = CircleMenu
+
+-- Nút đóng menu (nằm trong menu)
+local CloseButton = Instance.new("TextButton")
+CloseButton.Parent = CircleMenu
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(0.85, 0, 0.05, 0)
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Font = Enum.Font.SourceSansBold
+CloseButton.TextSize = 18
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(1, 0)
+CloseCorner.Parent = CloseButton
+
+-- Tạo nút tiện lợi
+local function createButton(name, pos, callback)
+	local Button = Instance.new("TextButton")
+	Button.Parent = CircleMenu
+	Button.Size = UDim2.new(0, 120, 0, 40)
+	Button.Position = pos
+	Button.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+	Button.Text = name
+	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Button.Font = Enum.Font.SourceSansBold
+	Button.TextSize = 18
+	Button.BackgroundTransparency = 0.2
+
+	local BtnCorner = Instance.new("UICorner")
+	BtnCorner.CornerRadius = UDim.new(1, 0)
+	BtnCorner.Parent = Button
+
+	Button.MouseButton1Click:Connect(callback)
+end
+
+-- Nút Fram kim cương
+createButton("💎 Fram kim cương", UDim2.new(0.26, 0, 0.35, 0), function()
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))()
 end)
 
--- Ban đầu menu hiển thị
-setMenuVisible(true)
+-- Nút Fram kẹo
+createButton("🍬 Fram kẹo", UDim2.new(0.26, 0, 0.55, 0), function()
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))()
+end)
+
+-- Ẩn/hiện menu (PC + mobile)
+local TweenService = game:GetService("TweenService")
+local visible = true
+
+local function toggleMenu()
+	visible = not visible
+	if visible then
+		CircleMenu.Visible = true
+		TweenService:Create(CircleMenu, TweenInfo.new(0.3), {Size = UDim2.new(0, 250, 0, 250)}):Play()
+	else
+		TweenService:Create(CircleMenu, TweenInfo.new(0.3), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+		task.wait(0.3)
+		CircleMenu.Visible = false
+	end
+end
+
+OpenButton.MouseButton1Click:Connect(toggleMenu)
+CloseButton.MouseButton1Click:Connect(toggleMenu)
