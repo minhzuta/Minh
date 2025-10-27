@@ -1,91 +1,28 @@
-local ScreenGui = Instance.new("ScreenGui")
-local ImageButton = Instance.new("ImageButton")
-local UICorner = Instance.new("UICorner")
+-- 🧱 Nút nhỏ mở/đóng menu
+local ToggleButton = Instance.new("ImageButton")
+ToggleButton.Parent = ScreenGui
+ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ToggleButton.BorderSizePixel = 0
+ToggleButton.Position = UDim2.new(0.05, 0, 0.3, 0)
+ToggleButton.Size = UDim2.new(0, 50, 0, 50)
+ToggleButton.Image = "rbxassetid://90677395878536"
+ToggleButton.Draggable = true
 
-ScreenGui.Parent = game.CoreGui
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+local UICorner2 = Instance.new("UICorner")
+UICorner2.CornerRadius = UDim.new(1, 10)
+UICorner2.Parent = ToggleButton
 
-ImageButton.Parent = ScreenGui
-ImageButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ImageButton.BorderSizePixel = 0
-ImageButton.Position = UDim2.new(0.10615778, 0, 0.16217947, 0)
-ImageButton.Size = UDim2.new(0, 40, 0, 40)
-ImageButton.Draggable = true
-ImageButton.Image = "http://www.roblox.com/asset/?id=90677395878536"
+-- Biến lưu trạng thái menu
+local isOpen = true
+local FluentUI = Window -- Menu Fluent của bạn
 
-UICorner.CornerRadius = UDim.new(1, 10)
-UICorner.Parent = ImageButton
-
-ImageButton.MouseButton1Down:Connect(function()
-	game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.End, false, game)
+-- 🖱️ Khi bấm nút → mở/đóng menu
+ToggleButton.MouseButton1Click:Connect(function()
+	isOpen = not isOpen
+	if isOpen then
+		FluentUI:SelectTab(Tabs.Main0) -- Mở lại giao diện
+		FluentUI:Minimize(false)       -- Gọi mở menu
+	else
+		FluentUI:Minimize(true)        -- Gọi đóng menu
+	end
 end)
-
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-repeat wait() until game:IsLoaded()
-
-local Window = Fluent:CreateWindow({
-	Title = "MinhZuTa =}",         
-	SubTitle = "Free key",             
-	TabWidth = 157,
-	Size = UDim2.fromOffset(450, 300),
-	Acrylic = true,
-	Theme = "Dark",                  
-	MinimizeKey = Enum.KeyCode.End
-})
-
--- 📑 Các tab (mục chính)
-local Tabs = {
-	Main0 = Window:AddTab({ Title = "giới thiệu" }),  
-	Main1 = Window:AddTab({ Title = "auto kim cương" }),  
-}
-
-------------------------------------------------
--- TAB 1: Các kênh tiktok
-------------------------------------------------
-Tabs.Main0:AddButton({
-	Title = "tiktok MinhZuTa",           
-	Description = "oách xà lách vô cùng",
-	Callback = function()
-		setclipboard("https://www.tiktok.com/@minhzuta")  
-	end
-})
-
-Tabs.Main0:AddButton({
-	Title = "tik",
-	Description = "làm chơi thui",
-	Callback = function()
-		setclipboard("https://www.tiktok.com/@minhzuta")    
-	end
-})
-
-Tabs.Main0:AddButton({
-	Title = "tiktok",
-	Description = "fl tiktok để biết thêm nhiều script",
-	Callback = function()
-		setclipboard("https://www.tiktok.com/@b.yt03?_t=ZS-90QsHmSjaiu&_r=1")
-	end
-})
-
-------------------------------------------------
--- TAB 2: Ví dụ thêm script
-------------------------------------------------
-Tabs.Main1:AddButton({
-	Title = "fram kim cương",                             
-	Description = "auto",
-	Callback = function()
-		local Settings = {
-			JoinTeam = "Pirates";   
-			Translator = true;      
-		}
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))()
-	end
-}) 
-
--- 👇 Nút mới cho script CandyFarm
-Tabs.Main1:AddButton({
-	Title = "Candy Farm",
-	Description = "Farm kẹo tự động",
-	Callback = function()
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))()
-	end
-})
