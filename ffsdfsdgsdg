@@ -1,4 +1,4 @@
--- MinhZuTa v1.10 (full) - Dán vào exploit/executor và chạy
+-- MinhZuTa v1.11 (plant tab moved above Atiban)
 -- Logo: 120369168842078
 -- Nền anime: 865757345613
 
@@ -9,7 +9,7 @@ local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- Remove old GUIs with same name
+-- Remove old GUIs with same prefix
 for _,v in ipairs(PlayerGui:GetChildren()) do
     if v.Name:match("^MinhZuTa_Redz") then pcall(function() v:Destroy() end) end
 end
@@ -31,7 +31,7 @@ local PANEL = Color3.fromRGB(28,28,30)
 local LIGHT = Color3.fromRGB(230,230,230)
 
 -- Root ScreenGui
-local ScreenGui = new("ScreenGui", {Parent = PlayerGui, Name = "MinhZuTa_Redz_v1_10", ResetOnSpawn = false})
+local ScreenGui = new("ScreenGui", {Parent = PlayerGui, Name = "MinhZuTa_Redz_v1_11", ResetOnSpawn = false})
 
 -- Root container (center)
 local Root = new("Frame", {
@@ -84,11 +84,12 @@ local function createSideButton(txt)
     return b, accentBar, label
 end
 
--- Create side buttons
+-- Create side buttons in new order:
+-- Overview | 99 nights in the forest | plant vs brainrot | Atiban (AFK)
 local btnOverview, barOverview = createSideButton("Overview")
 local btnScripts, barScripts, lblScripts = createSideButton("99 nights in the forest")
-local btnAtiban, barAtiban = createSideButton("Atiban (AFK)")
 local btnPlant, barPlant, lblPlant = createSideButton("plant vs brainrot")
+local btnAtiban, barAtiban = createSideButton("Atiban (AFK)")
 
 -- Main panel
 local Main = new("Frame", {Parent = Frost, BackgroundColor3 = PANEL, Size = UDim2.new(1,-200,1,0), Position = UDim2.new(0,200,0,0)})
@@ -111,7 +112,6 @@ end
 
 -- Helper to create script card (grid style)
 local function createScriptCard(parent, title, desc, cb)
-    -- if parent is a Grid, it will arrange; else fill width
     local card = new("Frame", {Parent = parent, BackgroundColor3 = Color3.fromRGB(40,40,42), Size = UDim2.new(0,200,0,60)})
     new("UICorner", {Parent = card, CornerRadius = UDim.new(0,8)})
     new("TextLabel", {Parent = card, BackgroundTransparency = 1, Text = title, Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0,12,0,6), Size = UDim2.new(1,-24,0,20), TextXAlignment = Enum.TextXAlignment.Left})
@@ -119,7 +119,6 @@ local function createScriptCard(parent, title, desc, cb)
     local btn = new("TextButton", {Parent = card, Text = "Run", BackgroundColor3 = ACCENT, TextColor3 = Color3.fromRGB(0,0,0), Font = Enum.Font.GothamBold, TextSize = 13, Size = UDim2.new(0,64,0,28), Position = UDim2.new(1,-76,0,16)})
     new("UICorner", {Parent = btn, CornerRadius = UDim.new(0,6)})
     btn.MouseButton1Click:Connect(function()
-        -- visual feedback
         local oldText = btn.Text
         btn.Text = "Running..."
         btn.AutoButtonColor = false
@@ -155,17 +154,17 @@ createScriptCard(ScriptsGrid, "Fram kim cương v2", "Auto", function()
     pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkenedEssence/Elude/refs/heads/main/External/Diamond/ELUDESJI.lua"))() end)
 end)
 
--- Atiban page
+-- Atiban page (will be last)
 local AtibanFrame = new("Frame", {Parent = Content, Name = "AtibanFrame", BackgroundTransparency = 1, Size = UDim2.new(1,0,0,120), Visible = false})
 new("TextLabel", {Parent = AtibanFrame, BackgroundTransparency = 1, Text = "Atiban (AFK)", Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0,0,0,0), Size = UDim2.new(1,0,0,20)})
 new("TextLabel", {Parent = AtibanFrame, BackgroundTransparency = 1, Text = "No AFK scripts added yet.", Font = Enum.Font.Gotham, TextSize = 13, TextColor3 = Color3.fromRGB(180,180,180), Position = UDim2.new(0,0,0,24), Size = UDim2.new(1,0,0,20)})
 
--- Plant vs brainrot page
+-- Plant vs brainrot page (placed before Atiban)
 local PlantFrame = new("Frame", {Parent = Content, Name = "PlantFrame", BackgroundTransparency = 1, Size = UDim2.new(1,0,0,220), Visible = false})
 local PlantGrid = new("Frame", {Parent = PlantFrame, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,220)})
 local PlantGridLayout = new("UIListLayout", {Parent = PlantGrid, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
 
--- Add plant vs brainrot scripts (vertical list cards)
+-- Add plant vs brainrot scripts
 createScriptCard(PlantGrid, "No Lag Hub", "No lag loader", function()
     pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/NoLag-id/No-Lag-HUB/refs/heads/main/Loader/Main.lua"))() end)
 end)
@@ -174,7 +173,7 @@ createScriptCard(PlantGrid, "Speed Hub", "Speed Hub X", function()
 end)
 
 -- Pages mapping and show function
-local pages = {Overview = OverviewFrame, Scripts = ScriptsFrame, Atiban = AtibanFrame, Plant = PlantFrame}
+local pages = {Overview = OverviewFrame, Scripts = ScriptsFrame, Plant = PlantFrame, Atiban = AtibanFrame}
 local function showPage(name)
     for _,f in pairs(pages) do pcall(function() f.Visible = false end) end
     if pages[name] then pages[name].Visible = true end
@@ -183,35 +182,35 @@ end
 -- Attach accent bars to side buttons
 barOverview.Parent = btnOverview
 barScripts.Parent = btnScripts
-barAtiban.Parent = btnAtiban
 barPlant.Parent = btnPlant
+barAtiban.Parent = btnAtiban
 
--- Side button clicks
+-- Side button clicks in new order
 btnOverview.MouseButton1Click:Connect(function()
     showPage("Overview")
     MainHeader.Text = "Overview"
-    barOverview.Visible = true; barScripts.Visible = false; barAtiban.Visible = false; barPlant.Visible = false
+    barOverview.Visible = true; barScripts.Visible = false; barPlant.Visible = false; barAtiban.Visible = false
 end)
 btnScripts.MouseButton1Click:Connect(function()
     showPage("Scripts")
     MainHeader.Text = "99 nights in the forest"
-    barOverview.Visible = false; barScripts.Visible = true; barAtiban.Visible = false; barPlant.Visible = false
-end)
-btnAtiban.MouseButton1Click:Connect(function()
-    showPage("Atiban")
-    MainHeader.Text = "Atiban (AFK)"
-    barOverview.Visible = false; barScripts.Visible = false; barAtiban.Visible = true; barPlant.Visible = false
+    barOverview.Visible = false; barScripts.Visible = true; barPlant.Visible = false; barAtiban.Visible = false
 end)
 btnPlant.MouseButton1Click:Connect(function()
     showPage("Plant")
     MainHeader.Text = "plant vs brainrot"
-    barOverview.Visible = false; barScripts.Visible = false; barAtiban.Visible = false; barPlant.Visible = true
+    barOverview.Visible = false; barScripts.Visible = false; barPlant.Visible = true; barAtiban.Visible = false
+end)
+btnAtiban.MouseButton1Click:Connect(function()
+    showPage("Atiban")
+    MainHeader.Text = "Atiban (AFK)"
+    barOverview.Visible = false; barScripts.Visible = false; barPlant.Visible = false; barAtiban.Visible = true
 end)
 
 -- Default open to "99 nights in the forest"
 showPage("Scripts")
 MainHeader.Text = "99 nights in the forest"
-barOverview.Visible = false; barScripts.Visible = true; barAtiban.Visible = false; barPlant.Visible = false
+barOverview.Visible = false; barScripts.Visible = true; barPlant.Visible = false; barAtiban.Visible = false
 
 -- Close button (top-right of Main)
 local CloseBtn = new("TextButton", {Parent = Main, Text = "✕", BackgroundColor3 = Color3.fromRGB(40,40,42), TextColor3 = LIGHT, Font = Enum.Font.GothamBold, TextSize = 16, Size = UDim2.new(0,36,0,28), Position = UDim2.new(1,-44,0,12)})
@@ -233,7 +232,7 @@ createSizeBtn("Thu nhỏ", function() currentSize = "small"; TweenService:Create
 createSizeBtn("Thu vừa", function() currentSize = "medium"; TweenService:Create(Root, tinfo, {Size = UDim2.new(0,480,0,280)}):Play() end)
 createSizeBtn("Thu lớn", function() currentSize = "large"; TweenService:Create(Root, tinfo, {Size = UDim2.new(0,720,0,420)}):Play() end)
 
--- Drag Root (touch friendly) — dragging Root by Main area
+-- Drag Root (touch friendly)
 local dragging, dragInput, dragStart, startPos = false, nil, nil, nil
 Main.InputBegan:Connect(function(input)
     if (input.UserInputType == Enum.UserInputType.Touch) or (input.UserInputType == Enum.UserInputType.MouseButton1) then
@@ -263,11 +262,9 @@ new("UIStroke", {Parent = FloatBtn, Color = ACCENT, Thickness = 1})
 FloatBtn.MouseButton1Click:Connect(function()
     if not Root.Visible then
         Root.Visible = true
-        -- set size depending on currentSize
         if currentSize == "small" then Root.Size = UDim2.new(0,200,0,120)
         elseif currentSize == "medium" then Root.Size = UDim2.new(0,480,0,280)
         else Root.Size = UDim2.new(0,720,0,420) end
-        -- subtle pop tween
         TweenService:Create(Root, TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = Root.Position}):Play()
     else
         TweenService:Create(Root, TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0,120,0,80)}):Play()
@@ -283,4 +280,4 @@ pcall(function()
     end)
 end)
 
-print("[MinhZuTa v1.10] Ready — dán & chạy bằng exploit/executor (Delta friendly).")
+print("[MinhZuTa v1.11] Ready — plant tab moved above Atiban. Dán & chạy bằng exploit/executor.")
