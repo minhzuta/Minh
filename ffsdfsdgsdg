@@ -1,11 +1,7 @@
--- MinhZuTa v1.12 (Centered Root, Full Tabs Restored)
--- Logo: 120369168842078
--- Nền anime: 865757345613
-
+-- MinhZuTa v1.12 (Logo làm nút thu/hiện menu)
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -16,116 +12,106 @@ for _,v in ipairs(PlayerGui:GetChildren()) do
     end
 end
 
--- Helper
-local function new(class, props)
+local function new(class,props)
     local ins = Instance.new(class)
     if props then
         for k,v in pairs(props) do
-            if k == "Parent" then ins.Parent = v else ins[k] = v end
+            if k=="Parent" then ins.Parent=v else ins[k]=v end
         end
     end
     return ins
 end
 
--- Colors
 local ACCENT = Color3.fromRGB(0,170,255)
 local BG_DARK = Color3.fromRGB(18,18,20)
 local PANEL = Color3.fromRGB(28,28,30)
 local LIGHT = Color3.fromRGB(230,230,230)
 local HOVER = Color3.fromRGB(38,38,42)
 
--- ScreenGui + Root (CENTERED)
-local ScreenGui = new("ScreenGui", {Parent = PlayerGui, Name = "MinhZuTa_v1_12", ResetOnSpawn = false})
-local Root = new("Frame", {
-    Parent = ScreenGui,
-    Name = "Root",
-    Size = UDim2.new(0,720,0,420),
-    Position = UDim2.new(0.5,0,0.5,0),   -- ở giữa màn hình
-    AnchorPoint = Vector2.new(0.5,0.5),
-    BackgroundTransparency = 1,
-    Visible = true
-})
-new("UICorner", {Parent = Root, CornerRadius = UDim.new(0,16)})
+-- ScreenGui + Root CENTERED
+local ScreenGui = new("ScreenGui",{Parent=PlayerGui,Name="MinhZuTa_v1_12",ResetOnSpawn=false})
+local Root = new("Frame",{Parent=ScreenGui,Size=UDim2.new(0,720,0,420),Position=UDim2.new(0.5,0,0.5,0),AnchorPoint=Vector2.new(0.5,0.5),BackgroundTransparency=1,Visible=true})
+new("UICorner",{Parent=Root,CornerRadius=UDim.new(0,16)})
 
--- Background anime + frost
-local BG = new("ImageLabel", {Parent = Root, Size = UDim2.new(1,0,1,0), BackgroundTransparency = 1, Image = "rbxassetid://865757345613", ScaleType = Enum.ScaleType.Crop})
-new("UICorner", {Parent = BG, CornerRadius = UDim.new(0,16)})
-local Frost = new("Frame", {Parent = BG, Size = UDim2.new(1,0,1,0), BackgroundColor3 = BG_DARK, BackgroundTransparency = 0.55})
-new("UICorner", {Parent = Frost, CornerRadius = UDim.new(0,16)})
+-- Background anime + Frost
+local BG = new("ImageLabel",{Parent=Root,Size=UDim2.new(1,0,1,0),BackgroundTransparency=1,Image="rbxassetid://865757345613",ScaleType=Enum.ScaleType.Crop})
+new("UICorner",{Parent=BG,CornerRadius=UDim.new(0,16)})
+local Frost = new("Frame",{Parent=BG,Size=UDim2.new(1,0,1,0),BackgroundColor3=BG_DARK,BackgroundTransparency=0.55})
+new("UICorner",{Parent=Frost,CornerRadius=UDim.new(0,16)})
 
 -- Sidebar
-local Sidebar = new("Frame", {Parent = Frost, Size = UDim2.new(0,200,1,0), BackgroundColor3 = PANEL})
-new("UICorner", {Parent = Sidebar, CornerRadius = UDim.new(0,12)})
+local Sidebar = new("Frame",{Parent=Frost,Size=UDim2.new(0,200,1,0),BackgroundColor3=PANEL})
+new("UICorner",{Parent=Sidebar,CornerRadius=UDim.new(0,12)})
 
--- Logo
-local LogoHolder = new("Frame", {Parent = Sidebar, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,120), Position = UDim2.new(0,0,0,10)})
-local LogoImg = new("ImageLabel", {Parent = LogoHolder, Size = UDim2.new(0,72,0,72), Position = UDim2.new(0.5,-36,0,10), Image = "rbxassetid://120369168842078", BackgroundColor3 = BG_DARK, BackgroundTransparency = 0, ScaleType = Enum.ScaleType.Crop})
-new("UICorner", {Parent = LogoImg, CornerRadius = UDim.new(1,0)})
-new("UIStroke", {Parent = LogoImg, Color = ACCENT, Thickness = 1})
-new("TextLabel", {Parent = LogoHolder, BackgroundTransparency = 1, Text = "MinhZuTa", Font = Enum.Font.GothamBold, TextSize = 18, TextColor3 = LIGHT, Position = UDim2.new(0,0,0,88), Size = UDim2.new(1,0,0,22), TextXAlignment = Enum.TextXAlignment.Center})
+-- Logo làm nút thu menu
+local LogoHolder = new("Frame",{Parent=Sidebar,BackgroundTransparency=1,Size=UDim2.new(1,0,0,120),Position=UDim2.new(0,0,0,10)})
+local LogoImg = new("ImageButton",{Parent=LogoHolder,Size=UDim2.new(0,72,0,72),Position=UDim2.new(0.5,-36,0,10),Image="rbxassetid://120369168842078",BackgroundColor3=BG_DARK,BackgroundTransparency=0,AutoButtonColor=true,ScaleType=Enum.ScaleType.Crop})
+new("UICorner",{Parent=LogoImg,CornerRadius=UDim.new(1,0)})
+new("UIStroke",{Parent=LogoImg,Color=ACCENT,Thickness=1})
+new("TextLabel",{Parent=LogoHolder,BackgroundTransparency=1,Text="MinhZuTa",Font=Enum.Font.GothamBold,TextSize=18,TextColor3=LIGHT,Position=UDim2.new(0,0,0,88),Size=UDim2.new(1,0,0,22),TextXAlignment=Enum.TextXAlignment.Center})
 
 -- Side buttons list
-local SideButtons = new("Frame", {Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0,0,0,140), Size = UDim2.new(1,0,0,260)})
-local SideLayout = new("UIListLayout", {Parent = SideButtons, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
+local SideButtons = new("Frame",{Parent=Sidebar,BackgroundTransparency=1,Position=UDim2.new(0,0,0,140),Size=UDim2.new(1,0,0,260)})
+local SideLayout = new("UIListLayout",{Parent=SideButtons,FillDirection=Enum.FillDirection.Vertical,Padding=UDim.new(0,8)})
 SideLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 local function createSideButton(txt)
-    local b = new("TextButton", {Parent = SideButtons, BackgroundColor3 = PANEL, Size = UDim2.new(0.88,0,0,38), Text = "", AutoButtonColor = true})
-    new("UICorner", {Parent = b, CornerRadius = UDim.new(0,8)})
-    local label = new("TextLabel", {Parent = b, BackgroundTransparency = 1, Text = txt, Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0.08,0,0,0), Size = UDim2.new(0.9,0,1,0), TextXAlignment = Enum.TextXAlignment.Left})
-    b.MouseEnter:Connect(function() pcall(function() TweenService:Create(b, TweenInfo.new(0.18), {BackgroundColor3 = HOVER}):Play() end) end)
-    b.MouseLeave:Connect(function() pcall(function() TweenService:Create(b, TweenInfo.new(0.18), {BackgroundColor3 = PANEL}):Play() end) end)
-    return b, label
+    local b = new("TextButton",{Parent=SideButtons,BackgroundColor3=PANEL,Size=UDim2.new(0.88,0,0,38),Text="",AutoButtonColor=true})
+    new("UICorner",{Parent=b,CornerRadius=UDim.new(0,8)})
+    local label = new("TextLabel",{Parent=b,BackgroundTransparency=1,Text=txt,Font=Enum.Font.Gotham,TextSize=14,TextColor3=LIGHT,Position=UDim2.new(0.08,0,0,0),Size=UDim2.new(0.9,0,1,0),TextXAlignment=Enum.TextXAlignment.Left})
+    b.MouseEnter:Connect(function() pcall(function() TweenService:Create(b,TweenInfo.new(0.18),{BackgroundColor3=HOVER}):Play() end) end)
+    b.MouseLeave:Connect(function() pcall(function() TweenService:Create(b,TweenInfo.new(0.18),{BackgroundColor3=PANEL}):Play() end) end)
+    return b,label
 end
 
--- Tabs
-local btnOverview, _ = createSideButton("Overview")
-local btn99N, _ = createSideButton("99 nights in the forest")
-local btnPlant, _ = createSideButton("plant vs brainrot")
-local btnAtiban, _ = createSideButton("Atiban (AFK)")
+local btnOverview,_ = createSideButton("Overview")
+local btn99N,_ = createSideButton("99 nights in the forest")
+local btnPlant,_ = createSideButton("plant vs brainrot")
+local btnAtiban,_ = createSideButton("Atiban (AFK)")
 
 -- Main panel
-local Main = new("Frame", {Parent = Frost, BackgroundColor3 = PANEL, Size = UDim2.new(1,-200,1,0), Position = UDim2.new(0,200,0,0)})
-new("UICorner", {Parent = Main, CornerRadius = UDim.new(0,12)})
-local MainHeader = new("TextLabel", {Parent = Main, BackgroundTransparency = 1, Text = "99 nights in the forest", Font = Enum.Font.GothamBold, TextSize = 18, TextColor3 = LIGHT, Position = UDim2.new(0,16,0,12), Size = UDim2.new(1,-32,0,28), TextXAlignment = Enum.TextXAlignment.Left})
+local Main = new("Frame",{Parent=Frost,BackgroundColor3=PANEL,Size=UDim2.new(1,-200,1,0),Position=UDim2.new(0,200,0,0)})
+new("UICorner",{Parent=Main,CornerRadius=UDim.new(0,12)})
+local MainHeader = new("TextLabel",{Parent=Main,BackgroundTransparency=1,Text="99 nights in the forest",Font=Enum.Font.GothamBold,TextSize=18,TextColor3=LIGHT,Position=UDim2.new(0,16,0,12),Size=UDim2.new(1,-32,0,28),TextXAlignment=Enum.TextXAlignment.Left})
+local Content = new("Frame",{Parent=Main,BackgroundTransparency=1,Position=UDim2.new(0,16,0,52),Size=UDim2.new(1,-32,1,-64)})
+local ContentLayout = new("UIListLayout",{Parent=Content,FillDirection=Enum.FillDirection.Vertical,Padding=UDim.new(0,8)})
 
--- Content frame
-local Content = new("Frame", {Parent = Main, BackgroundTransparency = 1, Position = UDim2.new(0,16,0,52), Size = UDim2.new(1,-32,1,-64)})
-local ContentLayout = new("UIListLayout", {Parent = Content, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
-
--- Notify helper
-local function notify(parent,text,dur)
-    dur = dur or 1.4
-    local n = new("TextLabel", {Parent=parent,BackgroundColor3=BG_DARK,Text=text,Font=Enum.Font.GothamBold,TextSize=14,TextColor3=LIGHT,Size=UDim2.new(0,220,0,36),Position=UDim2.new(1,-240,0,8)})
-    new("UICorner",{Parent=n,CornerRadius=UDim.new(0,6)})
-    TweenService:Create(n,TweenInfo.new(0.18),{TextTransparency=0}):Play()
-    delay(dur,function() TweenService:Create(n,TweenInfo.new(0.16),{TextTransparency=1}):Play(); delay(0.18,function() pcall(function() n:Destroy() end) end) end)
-end
-
--- Dragging
-local dragging, dragInput, dragStart, startPos
-Main.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = Root.Position
-        input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging=false end end)
+-- Logo làm nút thu menu
+local menuCollapsed = false
+LogoImg.MouseButton1Click:Connect(function()
+    if menuCollapsed then
+        -- Mở menu
+        TweenService:Create(Root,TweenInfo.new(0.25),{Size=UDim2.new(0,720,0,420)}):Play()
+        TweenService:Create(Sidebar,TweenInfo.new(0.25),{Size=UDim2.new(0,200,1,0)}):Play()
+        menuCollapsed=false
+    else
+        -- Thu menu
+        TweenService:Create(Root,TweenInfo.new(0.25),{Size=UDim2.new(0,220,0,100)}):Play()
+        TweenService:Create(Sidebar,TweenInfo.new(0.25),{Size=UDim2.new(0,60,1,0)}):Play()
+        menuCollapsed=true
     end
 end)
-Main.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
+
+-- Drag Root
+local dragging, dragInput, dragStart, startPos
+Root.InputBegan:Connect(function(input)
+    if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
+        dragging=true; dragStart=input.Position; startPos=Root.Position
+        input.Changed:Connect(function()
+            if input.UserInputState==Enum.UserInputState.End then dragging=false end
+        end)
+    end
+end)
+Root.InputChanged:Connect(function(input)
+    if input.UserInputType==Enum.UserInputType.MouseMovement or input.UserInputType==Enum.UserInputType.Touch then
+        dragInput=input
     end
 end)
 RunService.RenderStepped:Connect(function()
     if dragging and dragInput and dragStart and startPos then
-        local delta = dragInput.Position - dragStart
-        Root.Position = UDim2.new(startPos.X.Scale,startPos.X.Offset+delta.X,startPos.Y.Scale,startPos.Y.Offset+delta.Y)
+        local delta=dragInput.Position - dragStart
+        Root.Position=UDim2.new(startPos.X.Scale,startPos.X.Offset+delta.X,startPos.Y.Scale,startPos.Y.Offset+delta.Y)
     end
 end)
 
--- Pages, Cards, Scripts, Float button, etc
--- [Đầy đủ như bản trước, giữ nguyên tất cả tab: Overview, 99 nights in the forest, plant vs brainrot, Atiban (AFK)]
--- Chỉ khác là Root luôn ở giữa màn hình khi mở
-
-print("[MinhZuTa v1.12] Menu ready. Root centered, all tabs restored. Run via exploit/executor.")
+print("[MinhZuTa v1.12] Logo thu menu setup complete. Run via exploit/executor.")
