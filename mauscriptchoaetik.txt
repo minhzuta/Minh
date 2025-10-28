@@ -1,21 +1,22 @@
--- MinhZuTa v1.12 (Centered + Logo collapse) — Paste vào exploit/executor và Run
--- Logo: 120369168842078
--- Nền anime: 865757345613
+-- MinhZuTa v1.12 Final (centered, logo collapse, grow a garden)
+-- Logo: 120369168842078 | Nền anime: 865757345613
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer and LocalPlayer:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
 
--- Cleanup older versions
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = (LocalPlayer and LocalPlayer:FindFirstChild("PlayerGui")) or game:GetService("CoreGui")
+
+-- Cleanup old GUIs
 for _,v in ipairs(PlayerGui:GetChildren()) do
     if type(v.Name) == "string" and v.Name:match("^MinhZuTa") then
         pcall(function() v:Destroy() end)
     end
 end
 
+-- Helper constructor
 local function new(class, props)
     local ins = Instance.new(class)
     if props then
@@ -56,7 +57,7 @@ new("UICorner", {Parent = Frost, CornerRadius = UDim.new(0,16)})
 local Sidebar = new("Frame", {Parent = Frost, Size = UDim2.new(0,200,1,0), Position = UDim2.new(0,0,0,0), BackgroundColor3 = PANEL})
 new("UICorner", {Parent = Sidebar, CornerRadius = UDim.new(0,12)})
 
--- Logo holder (Logo is ImageButton for collapse)
+-- Logo holder (ImageLabel; will convert to ImageButton if needed)
 local LogoHolder = new("Frame", {Parent = Sidebar, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,120), Position = UDim2.new(0,0,0,10)})
 local LogoImg = new("ImageButton", {
     Parent = LogoHolder,
@@ -88,10 +89,11 @@ local function createSideButton(txt)
     return b, label
 end
 
--- Tabs
+-- Tabs creation (order: Overview, 99 nights, plant, grow, atiban)
 local btnOverview, _ = createSideButton("Overview")
 local btn99N, _ = createSideButton("99 nights in the forest")
 local btnPlant, _ = createSideButton("plant vs brainrot")
+local btnGrow, _ = createSideButton("grow a garden")
 local btnAtiban, _ = createSideButton("Atiban (AFK)")
 
 -- Main panel
@@ -140,13 +142,13 @@ local OverviewFrame = new("Frame", {Parent = Content, BackgroundTransparency = 1
 new("TextLabel", {Parent = OverviewFrame, BackgroundTransparency = 1, Text = "Giới thiệu", Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = LIGHT, Position = UDim2.new(0,0,0,0), Size = UDim2.new(1,0,0,22)})
 local TikTokBtn = new("TextButton", {Parent = OverviewFrame, BackgroundColor3 = Color3.fromRGB(50,50,50), Text = "TikTok: @minhzuta", Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0.04,0,0.3,0), Size = UDim2.new(0.92,0,0,28), AutoButtonColor = true})
 new("UICorner", {Parent = TikTokBtn, CornerRadius = UDim.new(0,8)})
-TikTokBtn.MouseButton1Click:Connect(function() pcall(function() if setclipboard then setclipboard("https://www.tiktok.com/@minhzuta") end end); TikTokBtn.Text="Link đã copy!"; notify(Main,"TikTok link copied ✅"); wait(1); TikTokBtn.Text="TikTok: @minhzuta" end)
+TikTokBtn.MouseButton1Click:Connect(function() pcall(function() if setclipboard then setclipboard("https://www.tiktok.com/@minhzuta") end end); TikTokBtn.Text = "Link đã copy!"; notify(Main, "TikTok link copied ✅"); wait(1); TikTokBtn.Text = "TikTok: @minhzuta" end)
 
 local ScriptsFrame = new("Frame", {Parent = Content, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,240), Visible = true})
 local ScriptsGrid = new("Frame", {Parent = ScriptsFrame, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,240)})
 new("UIGridLayout", {Parent = ScriptsGrid, CellSize = UDim2.new(0,200,0,60), CellPadding = UDim2.new(0,8,0,8)})
 
--- 99 nights in the forest scripts
+-- 99 nights scripts
 createScriptCard(ScriptsGrid, "Fram kim cương", "Auto", function()
     return pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))() end)
 end)
@@ -161,6 +163,7 @@ end)
 local PlantFrame = new("Frame", {Parent = Content, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,160), Visible = false})
 local PlantList = new("Frame", {Parent = PlantFrame, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,160)})
 new("UIListLayout", {Parent = PlantList, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
+
 createScriptCard(PlantList, "No Lag Hub", "No lag loader", function()
     return pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/NoLag-id/No-Lag-HUB/refs/heads/main/Loader/Main.lua"))() end)
 end)
@@ -168,7 +171,20 @@ createScriptCard(PlantList, "Speed Hub", "Speed Hub X", function()
     return pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))() end)
 end)
 
--- Atiban (AFK)
+-- grow a garden page (copy of plant vs brainrot)
+local GrowFrame = new("Frame", {Parent = Content, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,160), Visible = false})
+local GrowList = new("Frame", {Parent = GrowFrame, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,160)})
+new("UIListLayout", {Parent = GrowList, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
+
+-- Copy plant scripts into grow list by recreating same cards
+createScriptCard(GrowList, "No Lag Hub", "No lag loader", function()
+    return pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/NoLag-id/No-Lag-HUB/refs/heads/main/Loader/Main.lua"))() end)
+end)
+createScriptCard(GrowList, "Speed Hub", "Speed Hub X", function()
+    return pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))() end)
+end)
+
+-- Atiban (AFK) page
 local AtibanFrame = new("Frame", {Parent = Content, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,120), Visible = false})
 new("TextLabel", {Parent = AtibanFrame, BackgroundTransparency = 1, Text = "Atiban (AFK)", Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = LIGHT, Position = UDim2.new(0,0,0,0), Size = UDim2.new(1,0,0,22)})
 local AFKBtn = new("TextButton", {Parent = AtibanFrame, BackgroundColor3 = ACCENT, Text = "Bật AFK", TextColor3 = Color3.fromRGB(0,0,0), Font = Enum.Font.GothamBold, TextSize = 14, Position = UDim2.new(0.04,0,0.25,0), Size = UDim2.new(0.92,0,0,36)})
@@ -200,16 +216,17 @@ AFKBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Pages mapping + switching
-local pages = {Overview = OverviewFrame, ["99Nights"] = ScriptsFrame, Plant = PlantFrame, Atiban = AtibanFrame}
+-- Pages mapping + show logic
+local pages = {Overview = OverviewFrame, ["99Nights"] = ScriptsFrame, Plant = PlantFrame, Grow = GrowFrame, Atiban = AtibanFrame}
 local function showPage(key)
-    for _,v in pairs(pages) do pcall(function() v.Visible = false end) end
+    for _,f in pairs(pages) do pcall(function() f.Visible = false end) end
     if pages[key] then pages[key].Visible = true end
 end
 
 btnOverview.MouseButton1Click:Connect(function() showPage("Overview"); MainHeader.Text = "Giới thiệu" end)
 btn99N.MouseButton1Click:Connect(function() showPage("99Nights"); MainHeader.Text = "99 nights in the forest" end)
 btnPlant.MouseButton1Click:Connect(function() showPage("Plant"); MainHeader.Text = "plant vs brainrot" end)
+btnGrow.MouseButton1Click:Connect(function() showPage("Grow"); MainHeader.Text = "grow a garden" end)
 btnAtiban.MouseButton1Click:Connect(function() showPage("Atiban"); MainHeader.Text = "Atiban (AFK)" end)
 
 -- Default open
@@ -230,12 +247,12 @@ FloatBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Logo collapse logic (toggle show/hide)
+-- Logo collapse logic (toggle)
 local menuCollapsed = false
 local function setCollapsed(state)
     menuCollapsed = state
     if state then
-        -- collapse: shrink root and hide content, keep logo visible
+        -- collapse: shrink root and hide content, only logo visible
         pcall(function() Main.Visible = false end)
         pcall(function() SideButtons.Visible = false end)
         TweenService:Create(Root, TweenInfo.new(0.22), {Size = UDim2.new(0,220,0,120)}):Play()
@@ -280,7 +297,7 @@ end)
 -- Quick close (Backspace)
 pcall(function()
     local UIS = game:GetService("UserInputService")
-    UIS.InputBegan:Connect(function(i,gp)
+    UIS.InputBegan:Connect(function(i, gp)
         if not gp and i.KeyCode == Enum.KeyCode.Backspace then Root.Visible = false end
     end)
 end)
