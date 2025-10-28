@@ -1,5 +1,6 @@
--- MinhZuTa v1.12 — Anime Final (Centered, Logo collapse, grow a garden)
--- Logo: 120369168842078 | Nền anime (ảnh bạn gửi): 865757345613
+-- MinhZuTa v1.00 — Anime Edition (Final)
+-- Logo: 120369168842078 | Nền anime: 865757345613
+-- Copy -> Paste -> Run in exploit/executor
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -9,132 +10,100 @@ local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = (LocalPlayer and LocalPlayer:FindFirstChild("PlayerGui")) or game:GetService("CoreGui")
 
--- Cleanup old GUIs
+-- Cleanup older GUIs
 for _,v in ipairs(PlayerGui:GetChildren()) do
-    if type(v.Name) == "string" and v.Name:match("^MinhZuTa") then
+    if type(v.Name)=="string" and v.Name:match("^MinhZuTa") then
         pcall(function() v:Destroy() end)
     end
 end
 
--- Helper constructor
 local function new(class, props)
     local ins = Instance.new(class)
     if props then
         for k,v in pairs(props) do
-            if k == "Parent" then ins.Parent = v else ins[k] = v end
+            if k=="Parent" then ins.Parent = v else ins[k] = v end
         end
     end
     return ins
 end
 
--- Accent colors (for buttons, strokes)
+-- Accent & colors
 local ACCENT = Color3.fromRGB(0,170,255)
 local LIGHT = Color3.fromRGB(230,230,230)
 
--- Create ScreenGui + Root (centered)
-local ScreenGui = new("ScreenGui", {Parent = PlayerGui, Name = "MinhZuTa_v1_12_Final", ResetOnSpawn = false})
+-- ScreenGui + Root (centered)
+local ScreenGui = new("ScreenGui", {Parent = PlayerGui, Name = "MinhZuTa_v1_00", ResetOnSpawn = false})
 local Root = new("Frame", {
     Parent = ScreenGui,
     Name = "Root",
     Size = UDim2.new(0,720,0,420),
-    Position = UDim2.new(0.5, 0, 0.5, 0),
-    AnchorPoint = Vector2.new(0.5, 0.5),
+    Position = UDim2.new(0.5,0,0.5,0),
+    AnchorPoint = Vector2.new(0.5,0.5),
     BackgroundTransparency = 1,
-    Visible = true,
+    Visible = true
 })
-new("UICorner", {Parent = Root, CornerRadius = UDim.new(0,16)})
+new("UICorner",{Parent=Root, CornerRadius=UDim.new(0,16)})
 
--- Full background: use the anime image you provided
+-- Background anime image (your asset)
 local BG = new("ImageLabel", {
     Parent = Root,
-    Name = "BG",
-    Size = UDim2.new(1,0,1,0),
-    Position = UDim2.new(0,0,0,0),
-    BackgroundTransparency = 1,
-    Image = "rbxassetid://865757345613", -- ảnh bạn gửi
-    ScaleType = Enum.ScaleType.Crop,
-    ImageTransparency = 0, -- visible
-})
-new("UICorner", {Parent = BG, CornerRadius = UDim.new(0,16)})
-
--- Frost overlay (simulate blur / darken so text is readable)
-local Frost = new("Frame", {
-    Parent = BG,
-    Name = "Frost",
-    Size = UDim2.new(1,0,1,0),
-    BackgroundColor3 = Color3.fromRGB(8,8,10),
-    BackgroundTransparency = 0.45, -- ~10-15% blur visual effect feel
-})
-new("UICorner", {Parent = Frost, CornerRadius = UDim.new(0,16)})
-
--- Sidebar (left)
-local Sidebar = new("Frame", {Parent = Frost, Name = "Sidebar", Size = UDim2.new(0,200,1,0), Position = UDim2.new(0,0,0,0)})
-new("UICorner", {Parent = Sidebar, CornerRadius = UDim.new(0,12)})
-
--- Sidebar anime fill (subtle, sits under frosted sidebar)
-local SidebarAnime = new("ImageLabel", {
-    Parent = Sidebar,
     Size = UDim2.new(1,0,1,0),
     BackgroundTransparency = 1,
     Image = "rbxassetid://865757345613",
-    ScaleType = Enum.ScaleType.Crop,
-    ImageTransparency = 0.18,
-})
-new("UICorner", {Parent = SidebarAnime, CornerRadius = UDim.new(0,12)})
-
--- Sidebar frosted panel on top (for contrast)
-local SidebarFrost = new("Frame", {Parent = Sidebar, Size = UDim2.new(1,0,1,0), BackgroundColor3 = Color3.fromRGB(10,10,12), BackgroundTransparency = 0.55})
-new("UICorner", {Parent = SidebarFrost, CornerRadius = UDim.new(0,12)})
-
--- Logo holder (image button = collapse toggle)
-local LogoHolder = new("Frame", {Parent = Sidebar, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,120), Position = UDim2.new(0,0,0,10)})
-local LogoImg = new("ImageButton", {
-    Parent = LogoHolder,
-    Name = "LogoBtn",
-    Size = UDim2.new(0,72,0,72),
-    Position = UDim2.new(0.5,-36,0,10),
-    Image = "rbxassetid://120369168842078",
-    BackgroundColor3 = Color3.fromRGB(6,6,8),
-    BackgroundTransparency = 0,
-    AutoButtonColor = true,
     ScaleType = Enum.ScaleType.Crop
 })
-new("UICorner", {Parent = LogoImg, CornerRadius = UDim.new(1,0)})
-new("UIStroke", {Parent = LogoImg, Color = ACCENT, Thickness = 1})
-new("TextLabel", {Parent = LogoHolder, BackgroundTransparency = 1, Text = "MinhZuTa", Font = Enum.Font.GothamBold, TextSize = 18, TextColor3 = LIGHT, Position = UDim2.new(0,0,0,88), Size = UDim2.new(1,0,0,22), TextXAlignment = Enum.TextXAlignment.Center})
+new("UICorner",{Parent=BG, CornerRadius=UDim.new(0,16)})
+
+-- Frost overlay for readability
+local Frost = new("Frame", {Parent = BG, Size = UDim2.new(1,0,1,0), BackgroundColor3 = Color3.fromRGB(8,8,10), BackgroundTransparency = 0.45})
+new("UICorner",{Parent=Frost, CornerRadius=UDim.new(0,16)})
+
+-- Sidebar (left) using anime behind + frosted panel
+local Sidebar = new("Frame", {Parent = Frost, Size = UDim2.new(0,200,1,0), BackgroundTransparency = 1})
+new("UICorner",{Parent=Sidebar, CornerRadius=UDim.new(0,12)})
+local SidebarAnime = new("ImageLabel", {Parent=Sidebar, Size=UDim2.new(1,0,1,0), BackgroundTransparency=1, Image="rbxassetid://865757345613", ScaleType=Enum.ScaleType.Crop, ImageTransparency=0.18})
+new("UICorner",{Parent=SidebarAnime, CornerRadius=UDim.new(0,12)})
+local SidebarFrost = new("Frame", {Parent=Sidebar, Size = UDim2.new(1,0,1,0), BackgroundColor3 = Color3.fromRGB(10,10,12), BackgroundTransparency = 0.55})
+new("UICorner",{Parent=SidebarFrost, CornerRadius=UDim.new(0,12)})
+
+-- Logo (ImageButton -> collapse)
+local LogoHolder = new("Frame", {Parent = Sidebar, Size = UDim2.new(1,0,0,120), BackgroundTransparency = 1, Position = UDim2.new(0,0,0,10)})
+local LogoBtn = new("ImageButton", {Parent = LogoHolder, Size = UDim2.new(0,72,0,72), Position = UDim2.new(0.5,-36,0,10), Image = "rbxassetid://120369168842078", BackgroundColor3 = Color3.fromRGB(6,6,8), AutoButtonColor = true})
+new("UICorner",{Parent=LogoBtn, CornerRadius=UDim.new(1,0)})
+new("UIStroke",{Parent=LogoBtn, Color = ACCENT, Thickness = 1})
+new("TextLabel", {Parent=LogoHolder, BackgroundTransparency=1, Text="MinhZuTa", Font=Enum.Font.GothamBold, TextSize=18, TextColor3=LIGHT, Position=UDim2.new(0,0,0,88), Size=UDim2.new(1,0,0,22), TextXAlignment=Enum.TextXAlignment.Center})
 
 -- Side buttons container
-local SideButtons = new("Frame", {Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0,0,0,140), Size = UDim2.new(1,0,0,260)})
+local SideButtons = new("Frame", {Parent = Sidebar, Position = UDim2.new(0,0,0,140), Size = UDim2.new(1,0,0,260), BackgroundTransparency = 1})
 local SideLayout = new("UIListLayout", {Parent = SideButtons, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
 SideLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 local function createSideButton(txt)
-    local b = new("TextButton", {Parent = SideButtons, BackgroundColor3 = Color3.fromRGB(0,0,0), BackgroundTransparency = 0.25, Size = UDim2.new(0.88,0,0,38), Text = "", AutoButtonColor = true})
+    local b = new("TextButton", {Parent = SideButtons, Size = UDim2.new(0.88,0,0,38), BackgroundColor3 = Color3.fromRGB(0,0,0), BackgroundTransparency = 0.25, AutoButtonColor = true, Text = ""})
     new("UICorner", {Parent = b, CornerRadius = UDim.new(0,8)})
-    local label = new("TextLabel", {Parent = b, BackgroundTransparency = 1, Text = txt, Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0.08,0,0,0), Size = UDim2.new(0.9,0,1,0), TextXAlignment = Enum.TextXAlignment.Left})
+    new("TextLabel", {Parent = b, BackgroundTransparency = 1, Text = txt, Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0.08,0,0,0), Size = UDim2.new(0.9,0,1,0), TextXAlignment = Enum.TextXAlignment.Left})
     b.MouseEnter:Connect(function() pcall(function() TweenService:Create(b, TweenInfo.new(0.18), {BackgroundTransparency = 0.12}):Play() end) end)
     b.MouseLeave:Connect(function() pcall(function() TweenService:Create(b, TweenInfo.new(0.18), {BackgroundTransparency = 0.25}):Play() end) end)
-    return b, label
+    return b
 end
 
--- Create tabs in order
-local btnOverview,_ = createSideButton("Overview")
-local btn99N,_ = createSideButton("99 nights in the forest")
-local btnPlant,_ = createSideButton("plant vs brainrot")
-local btnGrow,_ = createSideButton("grow a garden")
-local btnAtiban,_ = createSideButton("Atiban (AFK)")
+-- Tabs order
+local btnOverview = createSideButton("Overview")
+local btn99N = createSideButton("99 nights in the forest")
+local btnPlant = createSideButton("plant vs brainrot")
+local btnGrow = createSideButton("grow a garden")
+local btnAtiban = createSideButton("Atiban (AFK)")
 
--- Main area (also shows anime background, with frosted layer)
-local Main = new("Frame", {Parent = Frost, Name = "Main", BackgroundTransparency = 1, Size = UDim2.new(1,-200,1,0), Position = UDim2.new(0,200,0,0)})
-new("UICorner", {Parent = Main, CornerRadius = UDim.new(0,12)})
-local MainAnime = new("ImageLabel", {Parent = Main, Size = UDim2.new(1,0,1,0), BackgroundTransparency = 1, Image = "rbxassetid://865757345613", ScaleType = Enum.ScaleType.Crop})
-new("UICorner", {Parent = MainAnime, CornerRadius = UDim.new(0,12)})
+-- Main area (also anime background + frosted overlay)
+local Main = new("Frame", {Parent = Frost, Size = UDim2.new(1,-200,1,0), Position = UDim2.new(0,200,0,0), BackgroundTransparency = 1})
+new("UICorner",{Parent=Main, CornerRadius=UDim.new(0,12)})
+local MainAnime = new("ImageLabel", {Parent = Main, Size = UDim2.new(1,0,1,0), BackgroundTransparency = 1, Image="rbxassetid://865757345613", ScaleType = Enum.ScaleType.Crop})
+new("UICorner",{Parent=MainAnime, CornerRadius=UDim.new(0,12)})
 local MainFrost = new("Frame", {Parent = Main, Size = UDim2.new(1,0,1,0), BackgroundColor3 = Color3.fromRGB(12,12,14), BackgroundTransparency = 0.50})
-new("UICorner", {Parent = MainFrost, CornerRadius = UDim.new(0,12)})
-
+new("UICorner",{Parent=MainFrost, CornerRadius=UDim.new(0,12)})
 local MainHeader = new("TextLabel", {Parent = Main, BackgroundTransparency = 1, Text = "99 nights in the forest", Font = Enum.Font.GothamBold, TextSize = 18, TextColor3 = LIGHT, Position = UDim2.new(0,16,0,12), Size = UDim2.new(1,-32,0,28), TextXAlignment = Enum.TextXAlignment.Left})
 
-local Content = new("Frame", {Parent = Main, BackgroundTransparency = 1, Position = UDim2.new(0,16,0,52), Size = UDim2.new(1,-32,1,-64)})
+local Content = new("Frame", {Parent = Main, Position = UDim2.new(0,16,0,52), Size = UDim2.new(1,-32,1,-64), BackgroundTransparency = 1})
 new("UIListLayout", {Parent = Content, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
 
 -- notify helper
@@ -147,9 +116,9 @@ local function notify(parent, text, dur)
     delay(dur, function() TweenService:Create(n, TweenInfo.new(0.16), {TextTransparency = 1}):Play(); delay(0.18, function() pcall(function() n:Destroy() end) end) end)
 end
 
--- script card builder
+-- script card creator
 local function createScriptCard(parent, title, desc, cb)
-    local card = new("Frame", {Parent = parent, BackgroundColor3 = Color3.fromRGB(0,0,0), BackgroundTransparency = 0.28, Size = UDim2.new(0,200,0,60)})
+    local card = new("Frame", {Parent = parent, Size = UDim2.new(0,200,0,60), BackgroundColor3 = Color3.fromRGB(0,0,0), BackgroundTransparency = 0.28})
     new("UICorner", {Parent = card, CornerRadius = UDim.new(0,8)})
     new("TextLabel", {Parent = card, BackgroundTransparency = 1, Text = title, Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0,12,0,6), Size = UDim2.new(1,-24,0,20), TextXAlignment = Enum.TextXAlignment.Left})
     new("TextLabel", {Parent = card, BackgroundTransparency = 1, Text = desc, Font = Enum.Font.Gotham, TextSize = 12, TextColor3 = Color3.fromRGB(190,190,190), Position = UDim2.new(0,12,0,28), Size = UDim2.new(1,-24,0,20), TextXAlignment = Enum.TextXAlignment.Left})
@@ -170,15 +139,15 @@ local function createScriptCard(parent, title, desc, cb)
     return card
 end
 
--- Pages & frames
-local OverviewFrame = new("Frame", {Parent = Content, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,120), Visible = false})
+-- Pages
+local OverviewFrame = new("Frame", {Parent = Content, Size = UDim2.new(1,0,0,120), BackgroundTransparency = 1, Visible = false})
 new("TextLabel", {Parent = OverviewFrame, BackgroundTransparency = 1, Text = "Giới thiệu", Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = LIGHT, Position = UDim2.new(0,0,0,0), Size = UDim2.new(1,0,0,22)})
 local TikTokBtn = new("TextButton", {Parent = OverviewFrame, BackgroundColor3 = Color3.fromRGB(40,40,40), Text = "TikTok: @minhzuta", Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0.04,0,0.3,0), Size = UDim2.new(0.92,0,0,28), AutoButtonColor = true})
 new("UICorner", {Parent = TikTokBtn, CornerRadius = UDim.new(0,8)})
-TikTokBtn.MouseButton1Click:Connect(function() pcall(function() if setclipboard then setclipboard("https://www.tiktok.com/@minhzuta") end end); TikTokBtn.Text = "Link đã copy!"; notify(Main, "TikTok link copied ✅"); wait(1); TikTokBtn.Text = "TikTok: @minhzuta" end)
+TikTokBtn.MouseButton1Click:Connect(function() pcall(function() if setclipboard then setclipboard("https://www.tiktok.com/@minhzuta") end end); TikTokBtn.Text="Link đã copy!"; notify(Main,"TikTok link copied ✅"); wait(1); TikTokBtn.Text="TikTok: @minhzuta" end)
 
-local ScriptsFrame = new("Frame", {Parent = Content, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,240), Visible = true})
-local ScriptsGrid = new("Frame", {Parent = ScriptsFrame, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,240)})
+local ScriptsFrame = new("Frame", {Parent = Content, Size = UDim2.new(1,0,0,240), BackgroundTransparency = 1, Visible = true})
+local ScriptsGrid = new("Frame", {Parent = ScriptsFrame, Size = UDim2.new(1,0,0,240), BackgroundTransparency = 1})
 new("UIGridLayout", {Parent = ScriptsGrid, CellSize = UDim2.new(0,200,0,60), CellPadding = UDim2.new(0,8,0,8)})
 
 -- 99 nights scripts
@@ -192,9 +161,9 @@ createScriptCard(ScriptsGrid, "Fram kim cương v2", "Auto", function()
     return pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkenedEssence/Elude/refs/heads/main/External/Diamond/ELUDESJI.lua"))() end)
 end)
 
--- plant vs brainrot page
-local PlantFrame = new("Frame", {Parent = Content, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,160), Visible = false})
-local PlantList = new("Frame", {Parent = PlantFrame, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,160)})
+-- plant vs brainrot
+local PlantFrame = new("Frame", {Parent = Content, Size = UDim2.new(1,0,0,160), BackgroundTransparency = 1, Visible = false})
+local PlantList = new("Frame", {Parent = PlantFrame, Size = UDim2.new(1,0,0,160), BackgroundTransparency = 1})
 new("UIListLayout", {Parent = PlantList, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
 createScriptCard(PlantList, "No Lag Hub", "No lag loader", function()
     return pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/NoLag-id/No-Lag-HUB/refs/heads/main/Loader/Main.lua"))() end)
@@ -203,9 +172,9 @@ createScriptCard(PlantList, "Speed Hub", "Speed Hub X", function()
     return pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))() end)
 end)
 
--- grow a garden page (copy of plant vs brainrot)
-local GrowFrame = new("Frame", {Parent = Content, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,160), Visible = false})
-local GrowList = new("Frame", {Parent = GrowFrame, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,160)})
+-- grow a garden (copy of plant)
+local GrowFrame = new("Frame", {Parent = Content, Size = UDim2.new(1,0,0,160), BackgroundTransparency = 1, Visible = false})
+local GrowList = new("Frame", {Parent = GrowFrame, Size = UDim2.new(1,0,0,160), BackgroundTransparency = 1})
 new("UIListLayout", {Parent = GrowList, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
 createScriptCard(GrowList, "No Lag Hub", "No lag loader", function()
     return pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/NoLag-id/No-Lag-HUB/refs/heads/main/Loader/Main.lua"))() end)
@@ -215,7 +184,7 @@ createScriptCard(GrowList, "Speed Hub", "Speed Hub X", function()
 end)
 
 -- Atiban (AFK)
-local AtibanFrame = new("Frame", {Parent = Content, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,120), Visible = false})
+local AtibanFrame = new("Frame", {Parent = Content, Size = UDim2.new(1,0,0,120), BackgroundTransparency = 1, Visible = false})
 new("TextLabel", {Parent = AtibanFrame, BackgroundTransparency = 1, Text = "Atiban (AFK)", Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = LIGHT, Position = UDim2.new(0,0,0,0), Size = UDim2.new(1,0,0,22)})
 local AFKBtn = new("TextButton", {Parent = AtibanFrame, BackgroundColor3 = ACCENT, Text = "Bật AFK", TextColor3 = Color3.fromRGB(0,0,0), Font = Enum.Font.GothamBold, TextSize = 14, Position = UDim2.new(0.04,0,0.25,0), Size = UDim2.new(0.92,0,0,36)})
 new("UICorner", {Parent = AFKBtn, CornerRadius = UDim.new(0,8)})
@@ -246,14 +215,13 @@ AFKBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Pages mapping + show logic
+-- Page mapping and switching
 local pages = {Overview = OverviewFrame, ["99Nights"] = ScriptsFrame, Plant = PlantFrame, Grow = GrowFrame, Atiban = AtibanFrame}
 local function showPage(key)
     for _,f in pairs(pages) do pcall(function() f.Visible = false end) end
     if pages[key] then pages[key].Visible = true end
 end
 
--- Side buttons actions
 btnOverview.MouseButton1Click:Connect(function() showPage("Overview"); MainHeader.Text = "Giới thiệu" end)
 btn99N.MouseButton1Click:Connect(function() showPage("99Nights"); MainHeader.Text = "99 nights in the forest" end)
 btnPlant.MouseButton1Click:Connect(function() showPage("Plant"); MainHeader.Text = "plant vs brainrot" end)
@@ -264,10 +232,10 @@ btnAtiban.MouseButton1Click:Connect(function() showPage("Atiban"); MainHeader.Te
 showPage("99Nights")
 MainHeader.Text = "99 nights in the forest"
 
--- Float button
-local FloatBtn = new("ImageButton", {Parent = ScreenGui, Image = "rbxassetid://120369168842078", Size = UDim2.new(0,56,0,56), Position = UDim2.new(0, 20, 1, -80), BackgroundColor3 = Color3.fromRGB(6,6,8)})
-new("UICorner", {Parent = FloatBtn, CornerRadius = UDim.new(1,0)})
-new("UIStroke", {Parent = FloatBtn, Color = ACCENT, Thickness = 1})
+-- Float button (bottom-left)
+local FloatBtn = new("ImageButton", {Parent = ScreenGui, Image = "rbxassetid://120369168842078", Size = UDim2.new(0,56,0,56), Position = UDim2.new(0,20,1,-80), BackgroundColor3 = Color3.fromRGB(6,6,8)})
+new("UICorner",{Parent=FloatBtn, CornerRadius=UDim.new(1,0)})
+new("UIStroke",{Parent=FloatBtn, Color = ACCENT, Thickness = 1})
 FloatBtn.MouseButton1Click:Connect(function()
     if not Root.Visible then
         Root.Visible = true
@@ -296,12 +264,9 @@ local function setCollapsed(state)
         pcall(function() Main.Visible = true end)
     end
 end
+LogoBtn.MouseButton1Click:Connect(function() setCollapsed(not menuCollapsed) end)
 
-LogoImg.MouseButton1Click:Connect(function()
-    setCollapsed(not menuCollapsed)
-end)
-
--- Drag whole GUI (Root) - works for mouse & touch
+-- Drag full GUI (Root)
 local dragging, dragInput, dragStart, startPos = false, nil, nil, nil
 Root.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -326,9 +291,7 @@ end)
 -- Quick close (Backspace)
 pcall(function()
     local UIS = game:GetService("UserInputService")
-    UIS.InputBegan:Connect(function(i,gp)
-        if not gp and i.KeyCode == Enum.KeyCode.Backspace then Root.Visible = false end
-    end)
+    UIS.InputBegan:Connect(function(i,gp) if not gp and i.KeyCode == Enum.KeyCode.Backspace then Root.Visible = false end end)
 end)
 
-print("[MinhZuTa v1.12 - Anime Final] Loaded — paste into exploit/executor and run.")
+print("[MinhZuTa v1.00 - Anime Edition] Loaded. Paste into exploit/executor and run.")
