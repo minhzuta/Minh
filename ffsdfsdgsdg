@@ -1,7 +1,4 @@
--- MinhZuTa Menu v1.4 (final) - Chạy bằng exploit/executor
--- Logo: 120369168842078
--- Dán toàn bộ vào executor rồi chạy
-
+-- MinhZuTa Menu v1.5 (Menu nền anime) - Chạy bằng exploit/executor
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local parentGui = game:GetService("CoreGui")
@@ -42,15 +39,27 @@ local MenuFrame = new("Frame",{
     Name="MenuFrame",
     Size=UDim2.new(0,320,0,420),
     Position=UDim2.new(0.03,80,0.12,0),
-    BackgroundColor3=Color3.fromRGB(30,30,30),
+    BackgroundTransparency=1, -- trong suốt để hiển thị nền anime
     Visible=false
 })
 new("UICorner",{Parent=MenuFrame,CornerRadius=UDim.new(0,14)})
 
+-- ---------- Nền anime ----------
+local MenuBG = new("ImageLabel", {
+    Parent = MenuFrame,
+    Size = UDim2.new(1,0,1,0),
+    Position = UDim2.new(0,0,0,0),
+    BackgroundTransparency = 1,
+    Image = "rbxassetid://865757345613", -- ID ảnh anime
+    ScaleType = Enum.ScaleType.Crop,
+})
+new("UICorner",{Parent=MenuBG,CornerRadius=UDim.new(0,14)})
+
+-- ---------- Header ----------
 local Header = new("TextLabel",{
     Parent=MenuFrame,
     BackgroundColor3=Color3.fromRGB(35,35,35),
-    BackgroundTransparency=0,
+    BackgroundTransparency=0.3,
     Text="MinhZuTa",
     Font=Enum.Font.GothamBold,
     TextSize=20,
@@ -65,6 +74,7 @@ local Collapse = new("TextButton",{
     Parent=MenuFrame,
     Text="—",
     BackgroundColor3=Color3.fromRGB(35,35,35),
+    BackgroundTransparency=0.3,
     Position=UDim2.new(0.85,0,0.03,0),
     Size=UDim2.new(0,0,0,28),
     SizeConstraint=Enum.SizeConstraint.RelativeYY,
@@ -74,16 +84,17 @@ local Collapse = new("TextButton",{
 })
 new("UICorner",{Parent=Collapse,CornerRadius=UDim.new(0,8)})
 
--- Tabs holder
-local TabsHolder = new("Frame",{Parent=MenuFrame,BackgroundColor3=Color3.fromRGB(30,30,30),Position=UDim2.new(0.03,0,0.12,0),Size=UDim2.new(0.94,0,0.82,0)})
+-- ---------- Tabs holder ----------
+local TabsHolder = new("Frame",{Parent=MenuFrame,BackgroundColor3=Color3.fromRGB(0,0,0),BackgroundTransparency=0.4,Position=UDim2.new(0.03,0,0.12,0),Size=UDim2.new(0.94,0,0.82,0)})
+new("UICorner",{Parent=TabsHolder,CornerRadius=UDim.new(0,10)})
 local TabsLayout = new("UIListLayout",{Parent=TabsHolder,Padding=UDim.new(0,8),FillDirection=Enum.FillDirection.Vertical})
 TabsLayout.HorizontalAlignment=Enum.HorizontalAlignment.Center
 
--- Giới thiệu
-local IntroFrame=new("Frame",{Parent=TabsHolder,BackgroundColor3=Color3.fromRGB(35,35,35),Size=UDim2.new(1,0,0,90)})
+-- ---------- Giới thiệu ----------
+local IntroFrame=new("Frame",{Parent=TabsHolder,BackgroundColor3=Color3.fromRGB(0,0,0),BackgroundTransparency=0.4,Size=UDim2.new(1,0,0,90)})
 new("UICorner",{Parent=IntroFrame,CornerRadius=UDim.new(0,10)})
 new("TextLabel",{Parent=IntroFrame,BackgroundTransparency=1,Text="Giới thiệu",Font=Enum.Font.GothamBold,TextSize=16,TextColor3=Color3.fromRGB(255,255,255),Position=UDim2.new(0.04,0,0.06,0),Size=UDim2.new(0.6,0,0,20),TextXAlignment=Enum.TextXAlignment.Left})
-local TikTokBtn=new("TextButton",{Parent=IntroFrame,BackgroundColor3=Color3.fromRGB(50,50,50),Text="TikTok: @minhzuta",Font=Enum.Font.Gotham,TextSize=14,TextColor3=Color3.fromRGB(230,230,230),Position=UDim2.new(0.04,0,0.4,0),Size=UDim2.new(0.92,0,0,28),AutoButtonColor=true})
+local TikTokBtn=new("TextButton",{Parent=IntroFrame,BackgroundColor3=Color3.fromRGB(50,50,50),BackgroundTransparency=0.3,Text="TikTok: @minhzuta",Font=Enum.Font.Gotham,TextSize=14,TextColor3=Color3.fromRGB(230,230,230),Position=UDim2.new(0.04,0,0.4,0),Size=UDim2.new(0.92,0,0,28),AutoButtonColor=true})
 new("UICorner",{Parent=TikTokBtn,CornerRadius=UDim.new(0,8)})
 new("TextLabel",{Parent=IntroFrame,BackgroundTransparency=1,Text="Cảm ơn bạn rất nhiều",Font=Enum.Font.Gotham,TextSize=13,TextColor3=Color3.fromRGB(200,200,200),Position=UDim2.new(0.04,0,0.75,0),Size=UDim2.new(0.92,0,0,16),TextXAlignment=Enum.TextXAlignment.Left})
 TikTokBtn.MouseButton1Click:Connect(function()
@@ -92,8 +103,8 @@ TikTokBtn.MouseButton1Click:Connect(function()
     TikTokBtn.Text="TikTok: @minhzuta"
 end)
 
--- 99 nights in the forest Menu (3 nút)
-local MenuTab=new("Frame",{Parent=TabsHolder,BackgroundColor3=Color3.fromRGB(35,35,35),Size=UDim2.new(1,0,0,140)})
+-- ---------- 99 nights in the forest Menu (3 nút) ----------
+local MenuTab=new("Frame",{Parent=TabsHolder,BackgroundColor3=Color3.fromRGB(0,0,0),BackgroundTransparency=0.4,Size=UDim2.new(1,0,0,140)})
 new("UICorner",{Parent=MenuTab,CornerRadius=UDim.new(0,10)})
 new("TextLabel",{Parent=MenuTab,BackgroundTransparency=1,Text="99 nights in the forest Menu (3 nút)",Font=Enum.Font.GothamBold,TextSize=14,TextColor3=Color3.fromRGB(255,255,255),Position=UDim2.new(0.04,0,0.04,0),Size=UDim2.new(0.92,0,0,22),TextXAlignment=Enum.TextXAlignment.Left})
 local ButtonsContainer=new("Frame",{Parent=MenuTab,BackgroundTransparency=1,Position=UDim2.new(0.04,0,0.22,0),Size=UDim2.new(0.92,0,0.7,0)})
@@ -101,135 +112,6 @@ local BtnLayout=new("UIListLayout",{Parent=ButtonsContainer,FillDirection=Enum.F
 BtnLayout.FillDirection=Enum.FillDirection.Horizontal
 
 local function createMenuButton(title,desc,callback)
-    local b=new("TextButton",{Parent=ButtonsContainer,BackgroundColor3=Color3.fromRGB(50,50,50),Size=UDim2.new(0.3,0,1,0),Text=title,Font=Enum.Font.Gotham,TextSize=14,TextColor3=Color3.fromRGB(240,240,240),AutoButtonColor=true})
+    local b=new("TextButton",{Parent=ButtonsContainer,BackgroundColor3=Color3.fromRGB(50,50,50),BackgroundTransparency=0.3,Size=UDim2.new(0.3,0,1,0),Text=title,Font=Enum.Font.Gotham,TextSize=14,TextColor3=Color3.fromRGB(240,240,240),AutoButtonColor=true})
     new("UICorner",{Parent=b,CornerRadius=UDim.new(0,8)})
     new("TextLabel",{Parent=b,BackgroundTransparency=1,Text=desc,Font=Enum.Font.Gotham,TextSize=11,TextColor3=Color3.fromRGB(180,180,180),Position=UDim2.new(0,6,0.6,0),Size=UDim2.new(0.9,0,0.35,0),TextXAlignment=Enum.TextXAlignment.Left})
-    b.MouseButton1Click:Connect(callback)
-    return b
-end
-
--- Nút 1
-createMenuButton("Fram kim cương","Auto",function()
-    pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))() end)
-end)
-
--- Nút 2
-createMenuButton("Fram kẹo","Auto",function()
-    pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))() end)
-end)
-
--- Nút 3: Fram kim cương v2
-createMenuButton("Fram kim cương v2","Auto",function()
-    pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkenedEssence/Elude/refs/heads/main/External/Diamond/ELUDESJI.lua"))() end)
-end)
-
--- Atiban (AFK)
-local AtibanTab=new("Frame",{Parent=TabsHolder,BackgroundColor3=Color3.fromRGB(35,35,35),Size=UDim2.new(1,0,0,70)})
-new("UICorner",{Parent=AtibanTab,CornerRadius=UDim.new(0,10)})
-new("TextLabel",{Parent=AtibanTab,BackgroundTransparency=1,Text="Atiban (AFK)",Font=Enum.Font.Gotham,TextSize=14,TextColor3=Color3.fromRGB(200,200,200),Position=UDim2.new(0.04,0,0.06,0),Size=UDim2.new(0.9,0,0,20),TextXAlignment=Enum.TextXAlignment.Left})
-
--- ---------- Nút điều khiển size menu (3 mức) ----------
-local SizeControl=new("Frame",{Parent=MenuFrame,BackgroundTransparency=1,Position=UDim2.new(0.03,0,0.92,0),Size=UDim2.new(0.94,0,0,30)})
-new("UIListLayout",{Parent=SizeControl,FillDirection=Enum.FillDirection.Horizontal,HorizontalAlignment=Enum.HorizontalAlignment.Center,Padding=UDim.new(0,6)})
-
-local function createSizeButton(text,callback)
-    local b=new("TextButton",{Parent=SizeControl,BackgroundColor3=Color3.fromRGB(60,60,60),Text=text,Font=Enum.Font.GothamBold,TextSize=14,TextColor3=Color3.fromRGB(255,255,255),Size=UDim2.new(0.3,0,1,0),AutoButtonColor=true})
-    new("UICorner",{Parent=b,CornerRadius=UDim.new(0,6)})
-    b.MouseButton1Click:Connect(callback)
-    return b
-end
-
--- state to remember last size ("large","medium","small")
-local currentSize = "large"
-
-local tweenInfo = TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-
--- Thu nhỏ: chỉ còn logo -> hide menu
-createSizeButton("Thu nhỏ",function()
-    currentSize = "small"
-    -- tween shrink then hide
-    TweenService:Create(MenuFrame, tweenInfo, {Size = UDim2.new(0,80,0,64), Position = UDim2.new(Toggle.Position.X.Scale, Toggle.Position.X.Offset + 80, Toggle.Position.Y.Scale, Toggle.Position.Y.Offset)}):Play()
-    delay(0.25, function()
-        MenuFrame.Visible = false
-    end)
-end)
-
--- Thu vừa: nhỏ gọn nhưng hiển thị header + vài nội dung
-createSizeButton("Thu vừa",function()
-    currentSize = "medium"
-    MenuFrame.Visible = true
-    TweenService:Create(MenuFrame, tweenInfo, {Size = UDim2.new(0,220,0,200), Position = UDim2.new(0.03,80,0.12,0)}):Play()
-end)
-
--- Thu lớn: đầy đủ
-createSizeButton("Thu lớn",function()
-    currentSize = "large"
-    MenuFrame.Visible = true
-    TweenService:Create(MenuFrame, tweenInfo, {Size = UDim2.new(0,320,0,420), Position = UDim2.new(0.03,80,0.12,0)}):Play()
-end)
-
--- ---------- Toggle / Collapse behaviour ----------
-Toggle.Activated:Connect(function()
-    if MenuFrame.Visible then
-        MenuFrame.Visible = false
-    else
-        -- open to last selected size
-        if currentSize == "small" then
-            -- if previously small, open to medium by default
-            currentSize = "medium"
-            MenuFrame.Visible = true
-            MenuFrame.Size = UDim2.new(0,220,0,200)
-            MenuFrame.Position = UDim2.new(0.03,80,0.12,0)
-        elseif currentSize == "medium" then
-            MenuFrame.Visible = true
-            MenuFrame.Size = UDim2.new(0,220,0,200)
-            MenuFrame.Position = UDim2.new(0.03,80,0.12,0)
-        else
-            MenuFrame.Visible = true
-            MenuFrame.Size = UDim2.new(0,320,0,420)
-            MenuFrame.Position = UDim2.new(0.03,80,0.12,0)
-        end
-    end
-end)
-
-Collapse.MouseButton1Click:Connect(function()
-    -- Collapse acts like "thu nhỏ" (hide menu)
-    currentSize = "small"
-    TweenService:Create(MenuFrame, tweenInfo, {Size = UDim2.new(0,80,0,64), Position = UDim2.new(Toggle.Position.X.Scale, Toggle.Position.X.Offset + 80, Toggle.Position.Y.Scale, Toggle.Position.Y.Offset)}):Play()
-    delay(0.25, function() MenuFrame.Visible = false end)
-end)
-
--- ---------- Drag header (touch & mouse friendly) ----------
-local dragging, dragInput, dragStart, startPos = false, nil, nil, nil
-Header.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true; dragStart = input.Position; startPos = MenuFrame.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-Header.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
-end)
-RunService.Heartbeat:Connect(function()
-    if dragging and dragInput and dragStart and startPos and MenuFrame.Visible then
-        local delta = dragInput.Position - dragStart
-        local newX = startPos.X.Offset + delta.X
-        local newY = startPos.Y.Offset + delta.Y
-        MenuFrame.Position = UDim2.new(startPos.X.Scale, newX, startPos.Y.Scale, newY)
-    end
-end)
-
--- Safety: prevent duplicate GUIs if script run multiple times
-for _,child in ipairs(parentGui:GetChildren()) do
-    if child.Name == "MinhZuTa_Menu" and child ~= ScreenGui then
-        child:Destroy()
-    end
-end
-
-print("[MinhZuTa v1.4] Ready — chạy bằng exploit/executor. Logo mới & 3 mức thu gọn đã thêm.")
