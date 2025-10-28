@@ -1,7 +1,6 @@
--- MinhZuTa v1.7 - Redz-style (Delta friendly)
+-- MinhZuTa v1.8 - Delta/executor ready (smoother open/close + button fade + notify)
 -- Logo: 120369168842078
 -- Nền anime: 865757345613
--- Dán và chạy bằng exploit/executor
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -9,9 +8,9 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- Remove old GUI if exists
+-- Remove old GUI
 for _,v in ipairs(PlayerGui:GetChildren()) do
-    if v.Name == "MinhZuTa_Redz" then v:Destroy() end
+    if v.Name == "MinhZuTa_Redz_v1_8" then v:Destroy() end
 end
 
 local function new(class, props)
@@ -24,187 +23,177 @@ local function new(class, props)
     return ins
 end
 
--- Basic settings
-local ACCENT = Color3.fromRGB(0, 170, 255) -- neon blue accent like Redz
+-- visual constants
+local ACCENT = Color3.fromRGB(0, 170, 255)
 local BG_DARK = Color3.fromRGB(18,18,20)
 local PANEL = Color3.fromRGB(28,28,30)
 local LIGHT = Color3.fromRGB(230,230,230)
 
--- ScreenGui
-local ScreenGui = new("ScreenGui", {Parent = PlayerGui, Name = "MinhZuTa_Redz", ResetOnSpawn = false})
+-- root ScreenGui
+local ScreenGui = new("ScreenGui",{Parent=PlayerGui, Name="MinhZuTa_Redz_v1_8", ResetOnSpawn=false})
 
--- Main container (invisible until open)
+-- Root container (centered)
 local Root = new("Frame", {
     Parent = ScreenGui,
     Name = "Root",
-    Size = UDim2.new(0, 720, 0, 420),
+    Size = UDim2.new(0,720,0,420),
     Position = UDim2.new(0.5, -360, 0.5, -210),
     AnchorPoint = Vector2.new(0.5,0.5),
     BackgroundTransparency = 1,
     Visible = false
 })
-new("UICorner", {Parent = Root, CornerRadius = UDim.new(0, 16)})
+new("UICorner",{Parent=Root, CornerRadius=UDim.new(0,16)})
 
--- Background anime
+-- background anime
 local BG = new("ImageLabel", {
-    Parent = Root,
-    Name = "BG",
-    Size = UDim2.new(1,0,1,0),
-    Position = UDim2.new(0,0,0,0),
-    BackgroundTransparency = 1,
-    Image = "rbxassetid://865757345613",
-    ScaleType = Enum.ScaleType.Crop,
-})
-new("UICorner", {Parent = BG, CornerRadius = UDim.new(0,16)})
-
--- Frost overlay for readability
-local Frost = new("Frame", {Parent = BG, Size = UDim2.new(1,0,1,0), BackgroundColor3 = BG_DARK, BackgroundTransparency = 0.55})
-new("UICorner", {Parent = Frost, CornerRadius = UDim.new(0,16)})
-
--- Left sidebar (Redz style)
-local Sidebar = new("Frame", {
-    Parent = Frost,
-    Name = "Sidebar",
-    Size = UDim2.new(0, 200, 1, 0),
-    Position = UDim2.new(0,0,0,0),
-    BackgroundColor3 = PANEL,
-    BackgroundTransparency = 0
-})
-new("UICorner", {Parent = Sidebar, CornerRadius = UDim.new(0,12)})
-
--- Logo circle
-local LogoHolder = new("Frame", {Parent = Sidebar, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,120), Position = UDim2.new(0,0,0,10)})
-local LogoImg = new("ImageLabel", {
-    Parent = LogoHolder,
-    Size = UDim2.new(0,72,0,72),
-    Position = UDim2.new(0.5,-36,0,10),
-    Image = "rbxassetid://120369168842078",
-    BackgroundTransparency = 0,
-    BackgroundColor3 = BG_DARK,
+    Parent = Root, Name = "BG",
+    Size = UDim2.new(1,0,1,0), Position = UDim2.new(0,0,0,0),
+    BackgroundTransparency = 1, Image = "rbxassetid://865757345613",
     ScaleType = Enum.ScaleType.Crop
 })
-new("UICorner", {Parent = LogoImg, CornerRadius = UDim.new(1,0)})
-new("UIStroke", {Parent = LogoImg, Color = ACCENT, Thickness = 1})
+new("UICorner",{Parent=BG, CornerRadius = UDim.new(0,16)})
 
-local Title = new("TextLabel", {Parent = LogoHolder, BackgroundTransparency = 1, Text = "MinhZuTa", Font = Enum.Font.GothamBold, TextSize = 18, TextColor3 = LIGHT, Position = UDim2.new(0,0,0,88), Size = UDim2.new(1,0,0,22), TextXAlignment = Enum.TextXAlignment.Center})
+-- frost overlay for readability
+local Frost = new("Frame", {Parent = BG, Size = UDim2.new(1,0,1,0), BackgroundColor3 = BG_DARK, BackgroundTransparency = 0.55})
+new("UICorner",{Parent=Frost, CornerRadius = UDim.new(0,16)})
 
--- Sidebar buttons (vertical)
-local SideButtons = new("Frame", {Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0,0,0,140), Size = UDim2.new(1,0,0,180)})
-local SideLayout = new("UIListLayout", {Parent = SideButtons, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
+-- left sidebar
+local Sidebar = new("Frame", {Parent = Frost, Name = "Sidebar", Size = UDim2.new(0,200,1,0), Position = UDim2.new(0,0,0,0), BackgroundColor3 = PANEL})
+new("UICorner",{Parent=Sidebar, CornerRadius = UDim.new(0,12)})
+
+local LogoHolder = new("Frame", {Parent=Sidebar, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,120), Position = UDim2.new(0,0,0,10)})
+local LogoImg = new("ImageLabel", {Parent=LogoHolder, Size = UDim2.new(0,72,0,72), Position = UDim2.new(0.5,-36,0,10), Image = "rbxassetid://120369168842078", BackgroundColor3 = BG_DARK, BackgroundTransparency = 0})
+new("UICorner",{Parent=LogoImg, CornerRadius = UDim.new(1,0)})
+new("UIStroke",{Parent=LogoImg, Color = ACCENT, Thickness = 1})
+new("TextLabel",{Parent=LogoHolder, BackgroundTransparency=1, Text="MinhZuTa", Font=Enum.Font.GothamBold, TextSize=18, TextColor3=LIGHT, Position=UDim2.new(0,0,0,88), Size=UDim2.new(1,0,0,22), TextXAlignment=Enum.TextXAlignment.Center})
+
+-- side buttons
+local SideButtons = new("Frame", {Parent=Sidebar, BackgroundTransparency=1, Position=UDim2.new(0,0,0,140), Size=UDim2.new(1,0,0,180)})
+local SideLayout = new("UIListLayout", {Parent=SideButtons, FillDirection=Enum.FillDirection.Vertical, Padding=UDim.new(0,8)})
 SideLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-local function createSideButton(txt, idx)
-    local b = new("TextButton", {
-        Parent = SideButtons,
-        BackgroundColor3 = PANEL,
-        Size = UDim2.new(0.88,0,0,38),
-        Text = "",
-        AutoButtonColor = true
-    })
-    new("UICorner", {Parent = b, CornerRadius = UDim.new(0,8)})
-    local l = new("TextLabel", {Parent = b, BackgroundTransparency = 1, Text = txt, Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0.08,0,0,0), Size = UDim2.new(0.9,0,1,0), TextXAlignment = Enum.TextXAlignment.Left})
-    -- accent bar on active
-    local bar = new("Frame", {Parent = b, BackgroundColor3 = ACCENT, Size = UDim2.new(0,4,1,0), Position = UDim2.new(0,0,0,0), Visible = false})
-    return b, bar, l
+local function createSideButton(txt)
+    local b = new("TextButton", {Parent=SideButtons, BackgroundColor3 = PANEL, Size = UDim2.new(0.88,0,0,38), Text = "", AutoButtonColor = true})
+    new("UICorner",{Parent=b, CornerRadius = UDim.new(0,8)})
+    local label = new("TextLabel",{Parent=b, BackgroundTransparency=1, Text=txt, Font=Enum.Font.Gotham, TextSize=14, TextColor3 = LIGHT, Position = UDim2.new(0.08,0,0,0), Size = UDim2.new(0.9,0,1,0), TextXAlignment=Enum.TextXAlignment.Left})
+    local accentBar = new("Frame", {Parent=b, BackgroundColor3 = ACCENT, Size = UDim2.new(0,4,1,0), Position = UDim2.new(0,0,0,0), Visible = false})
+    return b, accentBar, label
 end
 
-local btnOverview, barOverview = createSideButton("Overview", 1)
-local btnMenu, barMenu, lblMenu = createSideButton("Scripts", 2)
-local btnAtiban, barAtiban = createSideButton("Atiban (AFK)", 3)
+local btnOverview, barOverview = createSideButton("Overview")
+local btnScripts, barScripts, lblScripts = createSideButton("Scripts")
+local btnAtiban, barAtiban = createSideButton("Atiban (AFK)")
 
--- Right main panel
-local Main = new("Frame", {Parent = Frost, BackgroundColor3 = PANEL, BackgroundTransparency = 0, Size = UDim2.new(1,-200,1,0), Position = UDim2.new(0,200,0,0)})
-new("UICorner", {Parent = Main, CornerRadius = UDim.new(0,12)})
+-- main panel (right)
+local Main = new("Frame", {Parent = Frost, BackgroundColor3 = PANEL, Size = UDim2.new(1,-200,1,0), Position = UDim2.new(0,200,0,0)})
+new("UICorner",{Parent=Main, CornerRadius = UDim.new(0,12)})
 
--- Header inside main
 local MainHeader = new("TextLabel", {Parent = Main, BackgroundTransparency = 1, Text = "Overview", Font = Enum.Font.GothamBold, TextSize = 18, TextColor3 = LIGHT, Position = UDim2.new(0,16,0,12), Size = UDim2.new(1,-32,0,28), TextXAlignment = Enum.TextXAlignment.Left})
 
--- Container for page content
 local Content = new("Frame", {Parent = Main, BackgroundTransparency = 1, Position = UDim2.new(0,16,0,52), Size = UDim2.new(1,-32,1,-64)})
 local ContentLayout = new("UIListLayout", {Parent = Content, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
 
--- Scripts page layout (grid)
+-- Scripts grid
 local ScriptsFrame = new("Frame", {Parent = Content, Name = "ScriptsFrame", BackgroundTransparency = 1, Size = UDim2.new(1,0,0,180)})
 local Grid = new("Frame", {Parent = ScriptsFrame, BackgroundTransparency = 1, Size = UDim2.new(1,0,0,180)})
-local GridLayout = new("UIGridLayout", {Parent = Grid, CellSize = UDim2.new(0, 200, 0, 60), CellPadding = UDim2.new(0,8,0,8), FillDirection = Enum.FillDirection.Horizontal, StartCorner = Enum.StartCorner.TopLeft})
-GridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+local GridLayout = new("UIGridLayout", {Parent = Grid, CellSize = UDim2.new(0,200,0,60), CellPadding = UDim2.new(0,8,0,8)})
+
+local function notify(parent, text, time)
+    time = time or 1.6
+    local n = new("TextLabel", {Parent = parent, BackgroundColor3 = Color3.fromRGB(20,20,20), BackgroundTransparency = 0, Text = text, Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = LIGHT, Size = UDim2.new(0,220,0,36), Position = UDim2.new(1,-240,0,8)})
+    new("UICorner",{Parent=n, CornerRadius = UDim.new(0,6)})
+    n.TextTransparency = 1
+    TweenService:Create(n, TweenInfo.new(0.18), {TextTransparency = 0}):Play()
+    delay(time, function() TweenService:Create(n, TweenInfo.new(0.18), {TextTransparency = 1}):Play(); delay(0.18, function() pcall(function() n:Destroy() end) end) end)
+end
 
 local function createScriptCard(title, desc, cb)
     local card = new("Frame", {Parent = Grid, BackgroundColor3 = Color3.fromRGB(40,40,42), Size = UDim2.new(0,200,0,60)})
-    new("UICorner", {Parent = card, CornerRadius = UDim.new(0,8)})
-    local t = new("TextLabel", {Parent = card, BackgroundTransparency = 1, Text = title, Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0,12,0,6), Size = UDim2.new(1,-24,0,20), TextXAlignment = Enum.TextXAlignment.Left})
-    local d = new("TextLabel", {Parent = card, BackgroundTransparency = 1, Text = desc, Font = Enum.Font.Gotham, TextSize = 12, TextColor3 = Color3.fromRGB(180,180,180), Position = UDim2.new(0,12,0,28), Size = UDim2.new(1,-24,0,20), TextXAlignment = Enum.TextXAlignment.Left})
+    new("UICorner",{Parent=card, CornerRadius = UDim.new(0,8)})
+    new("TextLabel",{Parent=card, BackgroundTransparency = 1, Text = title, Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0,12,0,6), Size = UDim2.new(1,-24,0,20), TextXAlignment = Enum.TextXAlignment.Left})
+    new("TextLabel",{Parent=card, BackgroundTransparency = 1, Text = desc, Font = Enum.Font.Gotham, TextSize = 12, TextColor3 = Color3.fromRGB(180,180,180), Position = UDim2.new(0,12,0,28), Size = UDim2.new(1,-24,0,20), TextXAlignment = Enum.TextXAlignment.Left})
     local btn = new("TextButton", {Parent = card, Text = "Run", BackgroundColor3 = ACCENT, TextColor3 = Color3.fromRGB(0,0,0), Font = Enum.Font.GothamBold, TextSize = 13, Size = UDim2.new(0,64,0,28), Position = UDim2.new(1,-76,0,16)})
-    new("UICorner", {Parent = btn, CornerRadius = UDim.new(0,6)})
-    btn.MouseButton1Click:Connect(function() spawn(cb) end)
+    new("UICorner",{Parent=btn, CornerRadius = UDim.new(0,6)})
+    -- click visual + execute
+    btn.MouseButton1Click:Connect(function()
+        -- visual: flash (scale and fade)
+        local origSize = card.Size
+        TweenService:Create(card, TweenInfo.new(0.08, Enum.EasingStyle.Quad), {Size = UDim2.new(origSize.X.Scale, origSize.X.Offset, origSize.Y.Scale, origSize.Y.Offset - 4)}):Play()
+        delay(0.08, function() TweenService:Create(card, TweenInfo.new(0.12, Enum.EasingStyle.Back), {Size = origSize}):Play() end)
+        -- spinner/fade on btn
+        local oldText = btn.Text
+        btn.Text = "Running..."
+        btn.AutoButtonColor = false
+        spawn(function()
+            local ok, err = pcall(function() cb() end)
+            wait(0.2)
+            if ok then
+                notify(Main, "Script loaded ✅")
+            else
+                notify(Main, "Script lỗi ✖: "..tostring(err))
+            end
+            btn.Text = oldText
+            btn.AutoButtonColor = true
+        end)
+    end)
     return card
 end
 
--- create script cards
+-- create 3 cards
 createScriptCard("Fram kim cương", "Auto", function()
-    pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))() end)
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))()
 end)
 createScriptCard("Fram kẹo", "Auto", function()
-    pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))() end)
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))()
 end)
 createScriptCard("Fram kim cương v2", "Auto", function()
-    pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkenedEssence/Elude/refs/heads/main/External/Diamond/ELUDESJI.lua"))() end)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkenedEssence/Elude/refs/heads/main/External/Diamond/ELUDESJI.lua"))()
 end)
 
--- Overview content (simple)
+-- Overview, Atiban frames
 local OverviewFrame = new("Frame", {Parent = Content, Name = "OverviewFrame", BackgroundTransparency = 1, Size = UDim2.new(1,0,0,100)})
-new("TextLabel", {Parent = OverviewFrame, BackgroundTransparency = 1, Text = "Welcome to MinhZuTa (Redz style)", Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = LIGHT, Position = UDim2.new(0,0,0,0), Size = UDim2.new(1,0,0,24)})
-new("TextLabel", {Parent = OverviewFrame, BackgroundTransparency = 1, Text = "Use the Scripts tab to run available scripts.", Font = Enum.Font.Gotham, TextSize = 13, TextColor3 = Color3.fromRGB(200,200,200), Position = UDim2.new(0,0,0,28), Size = UDim2.new(1,0,0,40)})
-
--- Atiban frame
+new("TextLabel",{Parent=OverviewFrame, BackgroundTransparency = 1, Text="Welcome to MinhZuTa (Redz style)", Font=Enum.Font.GothamBold, TextSize=16, TextColor3=LIGHT, Position=UDim2.new(0,0,0,0), Size=UDim2.new(1,0,0,24)})
+new("TextLabel",{Parent=OverviewFrame, BackgroundTransparency = 1, Text="Use the Scripts tab to run available scripts.", Font=Enum.Font.Gotham, TextSize=13, TextColor3=Color3.fromRGB(200,200,200), Position=UDim2.new(0,0,0,28), Size=UDim2.new(1,0,0,40)})
 local AtibanFrame = new("Frame", {Parent = Content, Name = "AtibanFrame", BackgroundTransparency = 1, Size = UDim2.new(1,0,0,60)})
-new("TextLabel", {Parent = AtibanFrame, BackgroundTransparency = 1, Text = "Atiban (AFK)", Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = LIGHT, Position = UDim2.new(0,0,0,0), Size = UDim2.new(1,0,0,20)})
-new("TextLabel", {Parent = AtibanFrame, BackgroundTransparency = 1, Text = "No AFK scripts added yet.", Font = Enum.Font.Gotham, TextSize = 13, TextColor3 = Color3.fromRGB(180,180,180), Position = UDim2.new(0,0,0,24), Size = UDim2.new(1,0,0,20)})
+new("TextLabel",{Parent=AtibanFrame, BackgroundTransparency = 1, Text="Atiban (AFK)", Font=Enum.Font.GothamBold, TextSize=14, TextColor3=LIGHT, Position=UDim2.new(0,0,0,0), Size=UDim2.new(1,0,0,20)})
+new("TextLabel",{Parent=AtibanFrame, BackgroundTransparency = 1, Text="No AFK scripts added yet.", Font=Enum.Font.Gotham, TextSize=13, TextColor3=Color3.fromRGB(180,180,180), Position=UDim2.new(0,0,0,24), Size=UDim2.new(1,0,0,20)})
 
--- Page switching helper
+-- pages mapping + show function
 local pages = {Overview = OverviewFrame, Scripts = ScriptsFrame, Atiban = AtibanFrame}
 local function showPage(name)
     MainHeader.Text = name
     for _,f in pairs(pages) do f.Visible = false end
     pages[name].Visible = true
 end
--- init: show overview
 showPage("Overview")
 
--- Sidebar active visuals
-local function setActiveButton(bar, labelText)
-    -- hide all bars
-    for _,barv in pairs({barOverview, barMenu, barAtiban}) do if barv then barv.Visible = false end end
-    if bar then bar.Visible = true end
-end
--- attach bars (we created earlier)
+-- attach accent bars to side buttons
 barOverview.Parent = btnOverview
-barMenu.Parent = btnMenu
+barScripts.Parent = btnScripts
 barAtiban.Parent = btnAtiban
 
--- Button behaviors
+-- side button clicks
 btnOverview.MouseButton1Click:Connect(function()
     showPage("Overview")
-    setActiveButton(barOverview)
+    barOverview.Visible = true; barScripts.Visible = false; barAtiban.Visible = false
 end)
-btnMenu.MouseButton1Click:Connect(function()
+btnScripts.MouseButton1Click:Connect(function()
     showPage("Scripts")
-    setActiveButton(barMenu)
+    barOverview.Visible = false; barScripts.Visible = true; barAtiban.Visible = false
 end)
 btnAtiban.MouseButton1Click:Connect(function()
     showPage("Atiban")
-    setActiveButton(barAtiban)
+    barOverview.Visible = false; barScripts.Visible = false; barAtiban.Visible = true
 end)
 
--- Add small top-right close button
-local CloseBtn = new("TextButton", {Parent = Main, Text = "✕", BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(40,40,42), TextColor3 = LIGHT, Font = Enum.Font.GothamBold, TextSize = 16, Size = UDim2.new(0,36,0,28), Position = UDim2.new(1,-44,0,12)})
+-- small close button
+local CloseBtn = new("TextButton", {Parent = Main, Text = "✕", BackgroundColor3 = Color3.fromRGB(40,40,42), TextColor3 = LIGHT, Font = Enum.Font.GothamBold, TextSize = 16, Size = UDim2.new(0,36,0,28), Position = UDim2.new(1,-44,0,12)})
 new("UICorner",{Parent=CloseBtn, CornerRadius = UDim.new(0,6)})
 CloseBtn.MouseButton1Click:Connect(function() Root.Visible = false end)
 
--- Size controls (small/medium/large) - placed bottom-right
+-- size buttons bottom-right
 local SizeFrame = new("Frame", {Parent = Main, BackgroundTransparency = 1, Size = UDim2.new(0,220,0,36), Position = UDim2.new(1,-240,1,-46)})
 local SizeLayout = new("UIListLayout", {Parent = SizeFrame, FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, Padding = UDim.new(0,6)})
-
 local function createSizeBtn(text, cb)
     local b = new("TextButton", {Parent = SizeFrame, Text = text, BackgroundColor3 = Color3.fromRGB(70,70,70), TextColor3 = LIGHT, Font = Enum.Font.GothamBold, TextSize = 12, Size = UDim2.new(0,64,0,28)})
     new("UICorner",{Parent=b, CornerRadius = UDim.new(0,6)})
@@ -213,36 +202,20 @@ end
 
 local currentSize = "large"
 local tinfo = TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-
-createSizeBtn("Thu nhỏ", function()
-    currentSize = "small"
-    TweenService:Create(Root, tinfo, {Size = UDim2.new(0,200,0,120)}):Play()
-end)
-createSizeBtn("Thu vừa", function()
-    currentSize = "medium"
-    TweenService:Create(Root, tinfo, {Size = UDim2.new(0,480,0,280)}):Play()
-end)
-createSizeBtn("Thu lớn", function()
-    currentSize = "large"
-    TweenService:Create(Root, tinfo, {Size = UDim2.new(0,720,0,420)}):Play()
-end)
+createSizeBtn("Thu nhỏ", function() currentSize = "small"; TweenService:Create(Root, tinfo, {Size = UDim2.new(0,200,0,120)}):Play() end)
+createSizeBtn("Thu vừa", function() currentSize = "medium"; TweenService:Create(Root, tinfo, {Size = UDim2.new(0,480,0,280)}):Play() end)
+createSizeBtn("Thu lớn", function() currentSize = "large"; TweenService:Create(Root, tinfo, {Size = UDim2.new(0,720,0,420)}):Play() end)
 
 -- Drag Root (touch friendly)
 local dragging, dragInput, dragStart, startPos = false, nil, nil, nil
 Main.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = Root.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then dragging = false end
-        end)
+        dragging = true; dragStart = input.Position; startPos = Root.Position
+        input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging = false end end)
     end
 end)
 Main.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then dragInput = input end
 end)
 RunService.Heartbeat:Connect(function()
     if dragging and dragInput and dragStart and startPos and Root.Visible then
@@ -251,22 +224,31 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- Toggle via small floating logo button (bottom-left)
-local FloatBtn = new("ImageButton", {Parent = ScreenGui, Image = "rbxassetid://120369168842078", Size = UDim2.new(0,56,0,56), Position = UDim2.new(0, 20, 1, -80), BackgroundColor3 = BG_DARK, BackgroundTransparency = 0})
-new("UICorner", {Parent = FloatBtn, CornerRadius = UDim.new(1,0)})
-new("UIStroke", {Parent = FloatBtn, Color = ACCENT, Thickness = 1})
+-- floating toggle logo (bottom-left)
+local FloatBtn = new("ImageButton", {Parent = ScreenGui, Image = "rbxassetid://120369168842078", Size = UDim2.new(0,56,0,56), Position = UDim2.new(0, 20, 1, -80), BackgroundColor3 = BG_DARK})
+new("UICorner",{Parent=FloatBtn, CornerRadius = UDim.new(1,0)})
+new("UIStroke",{Parent=FloatBtn, Color = ACCENT, Thickness = 1})
 
+-- smooth open/close transitions
+local openTween = TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 FloatBtn.MouseButton1Click:Connect(function()
-    Root.Visible = not Root.Visible
-    -- when opening set size according to currentSize
-    if Root.Visible then
-        if currentSize == "small" then Root.Size = UDim2.new(0,200,0,120)
-        elseif currentSize == "medium" then Root.Size = UDim2.new(0,480,0,280)
-        else Root.Size = UDim2.new(0,720,0,420) end
+    if not Root.Visible then
+        Root.Visible = true
+        -- start from tiny scale & fade in
+        Root.Size = UDim2.new(0,160,0,100)
+        local t = TweenService:Create(Root, openTween, {Size = (currentSize == "small" and UDim2.new(0,200,0,120)) or (currentSize == "medium" and UDim2.new(0,480,0,280)) or UDim2.new(0,720,0,420)})
+        t:Play()
+        -- subtle pop on main
+        Main.Size = UDim2.new(1,-200,1,0)
+    else
+        -- smooth close shrink + hide
+        local t = TweenService:Create(Root, TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0,120,0,80)})
+        t:Play()
+        delay(0.22, function() Root.Visible = false end)
     end
 end)
 
--- Keyboard quick close (for desktop/testing)
+-- keyboard quick close (pc)
 pcall(function()
     local UIS = game:GetService("UserInputService")
     UIS.InputBegan:Connect(function(i,gp)
@@ -274,5 +256,4 @@ pcall(function()
     end)
 end)
 
--- Start visible false; print ready
-print("[MinhZuTa v1.7] Redz-style GUI ready. Dán & chạy bằng exploit/executor (Delta friendly).")
+print("[MinhZuTa v1.8] Ready — dán & chạy bằng exploit/executor (Delta friendly).")
