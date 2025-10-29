@@ -1,4 +1,4 @@
--- MinhZuTa v1.00 — Anime Edition (Final)
+-- MinhZuTa v1.00 — Anime Edition (Final, Fram kẹo updated)
 -- Logo: 120369168842078 | Nền anime: 865757345613
 -- Copy -> Paste -> Run in exploit/executor
 
@@ -116,7 +116,7 @@ local function notify(parent, text, dur)
     delay(dur, function() TweenService:Create(n, TweenInfo.new(0.16), {TextTransparency = 1}):Play(); delay(0.18, function() pcall(function() n:Destroy() end) end) end)
 end
 
--- script card creator
+-- script card builder
 local function createScriptCard(parent, title, desc, cb)
     local card = new("Frame", {Parent = parent, Size = UDim2.new(0,200,0,60), BackgroundColor3 = Color3.fromRGB(0,0,0), BackgroundTransparency = 0.28})
     new("UICorner", {Parent = card, CornerRadius = UDim.new(0,8)})
@@ -154,9 +154,14 @@ new("UIGridLayout", {Parent = ScriptsGrid, CellSize = UDim2.new(0,200,0,60), Cel
 createScriptCard(ScriptsGrid, "Fram kim cương", "Auto", function()
     return pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))() end)
 end)
+
+-- UPDATED Fram kẹo (your provided script)
 createScriptCard(ScriptsGrid, "Fram kẹo", "Auto", function()
-    return pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/MQPS7/99-Night-in-the-Forset/refs/heads/main/CandyFarm'))() end)
+    return pcall(function()
+        loadstring(game:HttpGet('https://ntt-hub.vercel.app/api/repo?id1=main&id2=lua'))()
+    end)
 end)
+
 createScriptCard(ScriptsGrid, "Fram kim cương v2", "Auto", function()
     return pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkenedEssence/Elude/refs/heads/main/External/Diamond/ELUDESJI.lua"))() end)
 end)
