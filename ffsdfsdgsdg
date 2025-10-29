@@ -1,4 +1,4 @@
--- MinhZuTa v1.00 — Anime Edition (Final, Fram kẹo updated)
+-- MinhZuTa v1.00 — Anime Edition (Final, with Users label)
 -- Logo: 120369168842078 | Nền anime: 865757345613
 -- Copy -> Paste -> Run in exploit/executor
 
@@ -68,7 +68,7 @@ new("UICorner",{Parent=SidebarFrost, CornerRadius=UDim.new(0,12)})
 
 -- Logo (ImageButton -> collapse)
 local LogoHolder = new("Frame", {Parent = Sidebar, Size = UDim2.new(1,0,0,120), BackgroundTransparency = 1, Position = UDim2.new(0,0,0,10)})
-local LogoBtn = new("ImageButton", {Parent = LogoHolder, Size = UDim2.new(0,72,0,72), Position = UDim2.new(0.5,-36,0,10), Image = "rbxassetid://120369168842078", BackgroundColor3 = Color3.fromRGB(6,6,8), AutoButtonColor = true})
+local LogoBtn = new("ImageButton", {Parent = LogoHolder, Size = UDim2.new(0,72,0,72), Position = UDim2.new(0.5,-36,0,10), Image = "rbxassetid://120369168842078", BackgroundColor3 = Color3.fromRGB(6,6,8), AutoButtonColor = true, ScaleType = Enum.ScaleType.Crop})
 new("UICorner",{Parent=LogoBtn, CornerRadius=UDim.new(1,0)})
 new("UIStroke",{Parent=LogoBtn, Color = ACCENT, Thickness = 1})
 new("TextLabel", {Parent=LogoHolder, BackgroundTransparency=1, Text="MinhZuTa", Font=Enum.Font.GothamBold, TextSize=18, TextColor3=LIGHT, Position=UDim2.new(0,0,0,88), Size=UDim2.new(1,0,0,22), TextXAlignment=Enum.TextXAlignment.Center})
@@ -106,6 +106,59 @@ local MainHeader = new("TextLabel", {Parent = Main, BackgroundTransparency = 1, 
 local Content = new("Frame", {Parent = Main, Position = UDim2.new(0,16,0,52), Size = UDim2.new(1,-32,1,-64), BackgroundTransparency = 1})
 new("UIListLayout", {Parent = Content, FillDirection = Enum.FillDirection.Vertical, Padding = UDim.new(0,8)})
 
+-- ====== Users label (fixed) - bottom-right of Main ======
+local FIXED_COUNT = "999+"  -- change this if needed
+
+local UsersLabelHolder = Instance.new("Frame")
+UsersLabelHolder.Name = "UsersLabelHolder"
+UsersLabelHolder.Parent = Main
+UsersLabelHolder.AnchorPoint = Vector2.new(1, 1)
+UsersLabelHolder.Position = UDim2.new(1, -16, 1, -16)
+UsersLabelHolder.Size = UDim2.new(0, 160, 0, 32)
+UsersLabelHolder.BackgroundTransparency = 1
+
+local UsersBg = Instance.new("Frame")
+UsersBg.Parent = UsersLabelHolder
+UsersBg.Size = UDim2.new(1, 0, 1, 0)
+UsersBg.BackgroundColor3 = Color3.fromRGB(8,8,10)
+UsersBg.BackgroundTransparency = 0.35
+UsersBg.BorderSizePixel = 0
+UsersBg.ClipsDescendants = true
+UsersBg.AnchorPoint = Vector2.new(1, 1)
+UsersBg.Position = UDim2.new(1, 0, 1, 0)
+UsersBg.LayoutOrder = 1
+UsersBg.Name = "UsersBg"
+local ucorner = Instance.new("UICorner", UsersBg)
+ucorner.CornerRadius = UDim.new(0,8)
+
+local UsersIcon = Instance.new("TextLabel")
+UsersIcon.Parent = UsersBg
+UsersIcon.Size = UDim2.new(0,28,1,0)
+UsersIcon.Position = UDim2.new(0,8,0,0)
+UsersIcon.BackgroundTransparency = 1
+UsersIcon.Text = "👥"
+UsersIcon.Font = Enum.Font.GothamBold
+UsersIcon.TextSize = 16
+UsersIcon.TextColor3 = Color3.fromRGB(255,255,255)
+UsersIcon.TextXAlignment = Enum.TextXAlignment.Left
+
+local UsersText = Instance.new("TextLabel")
+UsersText.Parent = UsersBg
+UsersText.Size = UDim2.new(1, -44, 1, 0)
+UsersText.Position = UDim2.new(0,40,0,0)
+UsersText.BackgroundTransparency = 1
+UsersText.Text = "Người dùng: " .. tostring(FIXED_COUNT)
+UsersText.Font = Enum.Font.Gotham
+UsersText.TextSize = 14
+UsersText.TextColor3 = Color3.fromRGB(225,225,225)
+UsersText.TextXAlignment = Enum.TextXAlignment.Left
+
+local function setFixedUserCount(v)
+    FIXED_COUNT = tostring(v)
+    UsersText.Text = "Người dùng: " .. FIXED_COUNT
+end
+-- ====================================================================
+
 -- notify helper
 local function notify(parent, text, dur)
     dur = dur or 1.4
@@ -116,7 +169,7 @@ local function notify(parent, text, dur)
     delay(dur, function() TweenService:Create(n, TweenInfo.new(0.16), {TextTransparency = 1}):Play(); delay(0.18, function() pcall(function() n:Destroy() end) end) end)
 end
 
--- script card builder
+-- script card creator
 local function createScriptCard(parent, title, desc, cb)
     local card = new("Frame", {Parent = parent, Size = UDim2.new(0,200,0,60), BackgroundColor3 = Color3.fromRGB(0,0,0), BackgroundTransparency = 0.28})
     new("UICorner", {Parent = card, CornerRadius = UDim.new(0,8)})
@@ -150,18 +203,15 @@ local ScriptsFrame = new("Frame", {Parent = Content, Size = UDim2.new(1,0,0,240)
 local ScriptsGrid = new("Frame", {Parent = ScriptsFrame, Size = UDim2.new(1,0,0,240), BackgroundTransparency = 1})
 new("UIGridLayout", {Parent = ScriptsGrid, CellSize = UDim2.new(0,200,0,60), CellPadding = UDim2.new(0,8,0,8)})
 
--- 99 nights scripts
+-- 99 nights scripts (Fram kẹo updated to your URL)
 createScriptCard(ScriptsGrid, "Fram kim cương", "Auto", function()
     return pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FNDayFarm.lua'))() end)
 end)
-
--- UPDATED Fram kẹo (your provided script)
 createScriptCard(ScriptsGrid, "Fram kẹo", "Auto", function()
     return pcall(function()
         loadstring(game:HttpGet('https://ntt-hub.vercel.app/api/repo?id1=main&id2=lua'))()
     end)
 end)
-
 createScriptCard(ScriptsGrid, "Fram kim cương v2", "Auto", function()
     return pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkenedEssence/Elude/refs/heads/main/External/Diamond/ELUDESJI.lua"))() end)
 end)
